@@ -1,6 +1,6 @@
-5a6a15fe9afc2a708eae1b6e625f82bb *DESCRIPTION
+72a6fb2a07aa7d564611d72aabd8719c *DESCRIPTION
 1d698fa133dafaafe42b9a927ac0568c *NAMESPACE
-689bdf96bc66d7b2f9dfe6538cbea932 *NEWS
+a66f892d93317451e11de2164c16fca7 *NEWS
 50abca6540261443273ca3713075c390 *R/RStoolbox.R
 f79517876ce32945b1ea85b943f642db *R/RcppExports.R
 6777bfa7a5e0cdd6850c70e7101882a5 *R/classifyQA.R
@@ -36,7 +36,7 @@ adcde4bc13db5f42e67f5a441ed0eb56 *R/stackMeta.R
 7f6106284ab33cd6788921bc99af765f *R/tasseledCap.R
 d5e4ac38a678ff7238aa7486e4d4a0f6 *R/topCor.R
 3c37f6fa4ba863501a33ec219104af64 *R/unsuperClass.R
-d36a3fc652329df2a978bdca8630b891 *README.md
+b602020dd6037ab64ea6255c2463b1bf *README.md
 a809c1ded6a7358890ca8f50a3a227e2 *data/lsat.rda
 fd74f5682f5becd07b8b74772f088b76 *data/rlogo.rda
 a93cf798b4ba6f1b4da9197bd6db3747 *data/srtm.rda
@@ -90,7 +90,7 @@ ef221788bfc150f406f4f53922e00f3c *man/tasseledCap.Rd
 18c27bde3c29f746dd5e96856fa5d665 *man/unsuperClass.Rd
 57cec3283bb299eb898bf8382d48e29b *man/writeSLI.Rd
 23099dffdcf51807dd75f2ecd8489a7a *src/RcppExports.cpp
-77cf60742a0fe1c3b65d680ffa983e35 *src/classQA.cpp
+f6c41c41c2de903726d59502fdcf2cf0 *src/classQA.cpp
 f49ced896b7240bb53ea9ac67bf53d97 *src/entropy.cpp
 9eb0a82510ed309f368a48edcab224b9 *src/gainOffsetRescale.cpp
 eabbe049fad1ba60598f15ae686b5131 *src/normImage.cpp
