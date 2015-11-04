@@ -9,8 +9,8 @@ entropyCpp <- function(x) {
     .Call('RStoolbox_entropyCpp', PACKAGE = 'RStoolbox', x)
 }
 
-gainOffsetRescale <- function(x, g, o) {
-    .Call('RStoolbox_gainOffsetRescale', PACKAGE = 'RStoolbox', x, g, o)
+gainOffsetRescale <- function(x, g, o, clamp) {
+    .Call('RStoolbox_gainOffsetRescale', PACKAGE = 'RStoolbox', x, g, o, clamp)
 }
 
 normImageCpp <- function(x, M, S) {
@@ -19,6 +19,10 @@ normImageCpp <- function(x, M, S) {
 
 predKmeansCpp <- function(x, centers) {
     .Call('RStoolbox_predKmeansCpp', PACKAGE = 'RStoolbox', x, centers)
+}
+
+predictMlcCpp <- function(newdata, model, nclasses) {
+    .Call('RStoolbox_predictMlcCpp', PACKAGE = 'RStoolbox', newdata, model, nclasses)
 }
 
 pwSimilarityCpp <- function(img, ref, method) {

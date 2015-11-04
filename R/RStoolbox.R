@@ -47,14 +47,14 @@
 #' \item \code{\link{ggRGB}}: efficient plotting of remote sensing imagery in RGB with ggplot2
 #' }
 #' 
-#' @import raster sp rgeos plyr caret stringr reshape2 ggplot2 
+#' @import raster sp rgeos plyr caret reshape2 ggplot2 
 #' @importFrom foreach getDoParRegistered 
 #' @importFrom doParallel registerDoParallel
 #' @importFrom codetools findGlobals
 #' @importFrom geosphere areaPolygon
 #' @importFrom parallel parLapply parSapply parApply clusterExport
 #' @importFrom XML xmlParse xmlToList
-#' @importFrom stats coefficients lm ecdf median approxfun knots kmeans na.omit complete.cases loadings princomp
+#' @importFrom stats coefficients lm ecdf median approxfun knots kmeans na.omit complete.cases loadings princomp cov
 #' @importFrom graphics par abline
 #' @importFrom methods as
 #' @importFrom utils read.csv read.delim str write.table data
@@ -75,6 +75,7 @@ NULL
 #' @keywords datasets
 #' @name rlogo
 #' @examples 
+#' data(rlogo)
 #' ggRGB(rlogo,r = 1,g = 2,b = 3)
 NULL
 
@@ -88,6 +89,7 @@ NULL
 #' @keywords datasets
 #' @name srtm
 #' @examples 
+#' data(srtm)
 #' ggR(srtm)
 NULL
 

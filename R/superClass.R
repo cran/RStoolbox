@@ -10,11 +10,12 @@
 #' @param areaWeightedSampling Logical. If \code{TRUE} scales sample size per polygon area. The bigger the polygon the more samples are taken.
 #' @param polygonBasedCV Logical. If \code{TRUE} model tuning during cross-validation is conducted on a per-polygon basis. Use this to deal with overfitting.
 #' @param trainPartition Numeric. Partition (polygon based) of \code{trainData} that goes into the training data set between zero and one. Ignored if \code{valData} is provided.
-#' @param model Character. Which model to use. See \link[caret]{train} for options. Defaults to randomForest ('rf')
+#' @param model Character. Which model to use. See \link[caret]{train} for options. Defaults to randomForest ('rf'). In addition to the standard caret models, a maximum likelihood classification is available via \code{model = 'mlc'}. 
 #' @param tuneLength Integer. Number of levels for each tuning paramete (see \link[caret]{train} for details).
 #' @param kfold Integer. Number of cross-validation resamples during model tuning.
 #' @param minDist Numeric. Minumum distance factor between training and validation data, e.g. minDist=1 will clip validation polygons to ensure a minimal distance of one pixel to the next training polygon. Applies onl if trainData and valData overlap.
 #' @param mode Character. Model type: 'regression' or 'classification'. 
+#' @param predType Character. Type of the final output raster. Either "raw" for class predictions or "prob" for class probabilities. Class probabilities are not available for all classification models (\link[caret]{predict.train}). 
 #' @param filename Path to output file (optional). If \code{NULL}, standard raster handling will apply, i.e. storage either in memory or in the raster temp directory. 
 #' @param verbose Logical. prints progress and statistics during execution
 #' @param overwrite logical. Overwrite spatial prediction raster if it already exists.
@@ -55,18 +56,18 @@
 #' library(randomForest)
 #' library(e1071)
 #' library(raster)
-#' input <- brick(system.file("external/rlogo.grd", package="raster"))
+#' data(rlogo)
 #' train <- readRDS(system.file("external/training.rds", package="RStoolbox"))
 #' 
 #' ## Plot training data
 #' olpar <- par(no.readonly = TRUE) # back-up par
 #' par(mfrow=c(1,2))
 #' colors <- c("yellow", "green", "deeppink")
-#' plotRGB(input)
+#' plotRGB(rlogo)
 #' plot(train, add = TRUE, col =  colors[train$class], pch = 19)
 #' 
 #' ## Fit classifier (splitting training into 70\% training data, 30\% validation data)
-#' SC 	  <- superClass(input, trainData = train, responseCol = "class", 
+#' SC 	  <- superClass(rlogo, trainData = train, responseCol = "class", 
 #' model = "rf", tuneLength = 1, trainPartition = 0.7)
 #' SC
 #' 
@@ -78,7 +79,7 @@
 superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
 		nSamples = 1000, areaWeightedSampling = TRUE, polygonBasedCV = FALSE, trainPartition = NULL,
         model = "rf", tuneLength = 3,  kfold = 5,
-        minDist = 2,  mode = "classification",
+        minDist = 2,  mode = "classification", predType = "raw",
         filename = NULL, verbose,
          overwrite = TRUE, ...) {
     # TODO: check applicability of raster:::.intersectExtent 
@@ -149,11 +150,28 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
             ## Clip validation data to training data + 2 pixel buffer 
             #dissolve(gUnionCascaded(trainData, trainData[[responseCol]]))        
             inter <- gIntersection(valData, trainData, byid = TRUE) ## again both steps needed to deal with poor poly data potentially arising from manually digitizing training areas
-            inter <- gUnionCascaded(inter)
+            
+            if(inherits(inter, "SpatialCollections")) {
+               ## This happens when polygons share borders
+               ## Make lines or points polygons 
+               l2poly <- if(!is.null(inter@lineobj))  gBuffer(inter@lineobj, width = res(img)[1]*1e-5, byid = TRUE) 
+               p2poly <- if(!is.null(inter@pointobj)) gBuffer(inter@pointobj, width = res(img)[1]*1e-5, byid = TRUE) 
+               ## Merge all polygons into single list
+               plist <- list(l2poly, p2poly, inter@polyobj)
+               ## Remove non-matching classes
+               plist[vapply(plist, is.null, logical(1))] <- NULL
+               inter <- do.call("rbind", c(plist, makeUniqueIDs = TRUE))                         
+            } else {
+                inter <- gUnionCascaded(inter)
+            }
+            
+            ## Buffer train polygons by mindist and clip valData with it
             if(minDist != 0) inter <- gBuffer(inter, width = res(img)[1] * minDist)
             clip  <- gDifference(valData, inter, byid = TRUE)
             if(is.null(clip)) stop("After clipping valData to trainData+minDist*pix buffer no validation polygons remain. Please provide non-overlapping trainData and valData.")
-            classVec <- data.frame(x = valData[[responseCol]][over(clip, valData)])
+           
+            ## Add class labels back to polygons
+            classVec <- data.frame(x = over(clip, valData)[[responseCol]])
             valData <- as(clip, "SpatialPolygonsDataFrame")
             valData@data <- classVec 
             colnames(valData@data) <- responseCol
@@ -163,7 +181,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
             inter <- colnames(inter)[which(inter, arr.ind = TRUE)[,2]]
             valData <- valData[!rownames(valData@data) %in% inter,]        
         }     
-        warning("TrainData and valData overlap. Excluded overlapping points or polygon areas.\n" , nrow(valData), " of ", nValOrig, " remain for validation.")
+        warning("TrainData and valData overlap. Excluded overlapping points or polygon areas.\n")
     }   
     
     ## Creade hold out indices on polygon level
@@ -228,7 +246,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
     if(mode == "classification"){   
         if(!is.factor(dataSet$response)) dataSet$response <- as.factor(dataSet$response)
         classes 	 <- unique(dataSet$response)
-        classMapping <- data.frame(classID = as.numeric(classes), class = as.character(classes))
+        classMapping <- data.frame(classID = as.numeric(classes), class = as.character(classes), stringsAsFactors = FALSE)
         classMapping <- classMapping[order(classMapping$classID),]
         rownames(classMapping) <- NULL
     }
@@ -245,6 +263,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
     .vMessage("Starting to fit model")   
     .registerDoParallel()
     indexIn <- if(polygonBasedCV) lapply(1:kfold, function(x) which(x != indexOut)) 
+    if(model == "mlc") model = mlcCaret
     caretModel 	<- train(response ~ ., data = dataSet, method = model, tuneLength = tuneLength, 
             trControl = trainControl(method = "cv", number = kfold, index = indexIn), ...)   
     
@@ -264,8 +283,14 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
     
     wrArgs          <- list(filename = filename, progress = progress, datatype = dataType, overwrite = overwrite)
     wrArgs$filename <- filename ## remove filename from args if is.null(filename) --> standard writeRaster handling applies
-    spatPred        <- .paraRasterFun(img, rasterFun=raster::predict, args = list(model=caretModel), wrArgs = wrArgs)
-    names(spatPred) <- responseCol
+    if(predType == "prob") {
+        ddd<- predict(caretModel, dataSet[1:2,-1,drop=FALSE], type="prob")
+        probInd <- 1:ncol(ddd)
+    } else {
+        probInd <- 1
+    } 
+    spatPred        <- .paraRasterFun(img, rasterFun=raster::predict, args = list(model=caretModel, type = predType, index = probInd), wrArgs = wrArgs)
+    if(predType != "prob") names(spatPred) <- responseCol
     
     ## VALIDATION ########################
     if(!is.null(valData)){

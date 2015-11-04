@@ -7,8 +7,8 @@
 superClass(img, trainData, valData = NULL, responseCol = NULL,
   nSamples = 1000, areaWeightedSampling = TRUE, polygonBasedCV = FALSE,
   trainPartition = NULL, model = "rf", tuneLength = 3, kfold = 5,
-  minDist = 2, mode = "classification", filename = NULL, verbose,
-  overwrite = TRUE, ...)
+  minDist = 2, mode = "classification", predType = "raw",
+  filename = NULL, verbose, overwrite = TRUE, ...)
 }
 \arguments{
 \item{img}{Raster* object. Typically remote sensing imagery, which is to be classified.}
@@ -27,7 +27,7 @@ superClass(img, trainData, valData = NULL, responseCol = NULL,
 
 \item{trainPartition}{Numeric. Partition (polygon based) of \code{trainData} that goes into the training data set between zero and one. Ignored if \code{valData} is provided.}
 
-\item{model}{Character. Which model to use. See \link[caret]{train} for options. Defaults to randomForest ('rf')}
+\item{model}{Character. Which model to use. See \link[caret]{train} for options. Defaults to randomForest ('rf'). In addition to the standard caret models, a maximum likelihood classification is available via \code{model = 'mlc'}.}
 
 \item{tuneLength}{Integer. Number of levels for each tuning paramete (see \link[caret]{train} for details).}
 
@@ -36,6 +36,8 @@ superClass(img, trainData, valData = NULL, responseCol = NULL,
 \item{minDist}{Numeric. Minumum distance factor between training and validation data, e.g. minDist=1 will clip validation polygons to ensure a minimal distance of one pixel to the next training polygon. Applies onl if trainData and valData overlap.}
 
 \item{mode}{Character. Model type: 'regression' or 'classification'.}
+
+\item{predType}{Character. Type of the final output raster. Either "raw" for class predictions or "prob" for class probabilities. Class probabilities are not available for all classification models (\link[caret]{predict.train}).}
 
 \item{filename}{Path to output file (optional). If \code{NULL}, standard raster handling will apply, i.e. storage either in memory or in the raster temp directory.}
 
@@ -83,18 +85,18 @@ library(caret)
 library(randomForest)
 library(e1071)
 library(raster)
-input <- brick(system.file("external/rlogo.grd", package="raster"))
+data(rlogo)
 train <- readRDS(system.file("external/training.rds", package="RStoolbox"))
 
 ## Plot training data
 olpar <- par(no.readonly = TRUE) # back-up par
 par(mfrow=c(1,2))
 colors <- c("yellow", "green", "deeppink")
-plotRGB(input)
+plotRGB(rlogo)
 plot(train, add = TRUE, col =  colors[train$class], pch = 19)
 
 ## Fit classifier (splitting training into 70\\\% training data, 30\\\% validation data)
-SC 	  <- superClass(input, trainData = train, responseCol = "class",
+SC 	  <- superClass(rlogo, trainData = train, responseCol = "class",
 model = "rf", tuneLength = 1, trainPartition = 0.7)
 SC
 

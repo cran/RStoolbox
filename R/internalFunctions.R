@@ -133,7 +133,7 @@
     
     if(basename(x) == x | grepl("^[.][.]/", x))    x   <- file.path(getwd(),x)
     if(grepl("[.][.]", x)){
-        xs  <- str_split(x, "/")[[1]]
+        xs  <- strsplit(x, "/")[[1]]
         ups <- grep("[.][.]", xs)  
         rem <- c(ups, ups-length(ups))
         rem <- rem[rem > 1]
@@ -216,6 +216,29 @@
         return(vapply(1:nlayers(x), function(xi) {x[[xi]]@data@haveminmax}, logical(1)))
     }
 }
+
+#' Subdivide polygons into smaller polygons
+#' @param polygons SpatialPolygonsDataFrame
+#' @param res Numeric. Spatial resolution of subdivition grid
+#' @noRd 
+#' @keywords internal
+.subdividePolys <- function(polygons, res = 1) {
+    pl <- lapply(seq_along(polygons), function(i){
+                ex       <- raster(polygons[i,])
+                res(ex)  <- res
+                pgrid <- rasterToPolygons(ex)
+                pgrid$layer = 1
+                pp    <- gIntersection(pgrid, polygons[i,], byid=TRUE, drop_lower_td = TRUE)
+                pp    <- as(pp, "SpatialPolygonsDataFrame")
+                pp$dummy <- polygons$layer[i]
+                names(pp) <- names(polygons)
+                pp
+            })
+    plo <- do.call("rbind", pl)
+    projection(plo) <- projection(polygons)
+    return(plo)
+}
+
 
 #' On package startup
 #' @noRd 
