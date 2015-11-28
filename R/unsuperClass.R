@@ -44,6 +44,7 @@
 #' 
 #' par(olpar) # reset par
 unsuperClass <- function(img, nSamples = 10000, nClasses = 5, nStarts = 25, nIter = 100, norm = FALSE, clusterMap = TRUE, algorithm = "Hartigan-Wong", ...){      
+	## TODO: check outermost prediction (cpp)
 	if(atMax <- nSamples > ncell(img)) nSamples <- ncell(img)
 	wrArgs <- list(...)
 	if(norm) img <- normImage(img)
@@ -58,7 +59,7 @@ unsuperClass <- function(img, nSamples = 10000, nClasses = 5, nStarts = 25, nIte
 		out[complete] <- model$cluster      
 		if("filename" %in% names(wrArgs)) out <- writeRaster(out, ...)
 	} else {
-		if(!clusterMap) warning("Raster is > memory. Resetting clusterMap to TRUE")
+		if(!clusterMap) warning("Raster size is > memory. Resetting clusterMap to TRUE")
 		.vMessage("Starting random sampling")
 		trainData <- sampleRandom(img, size = nSamples, na.rm = TRUE)
 		.vMessage("Starting kmeans fitting")
@@ -75,7 +76,7 @@ unsuperClass <- function(img, nSamples = 10000, nClasses = 5, nStarts = 25, nIte
 		
 #' @method print unsuperClass
 #' @export 
-		print.unsuperClass <- function(x, ...){
+print.unsuperClass <- function(x, ...){
 	cat("unsuperClass results\n")    
 	cat("\n*************** Map ******************\n")
 	cat("$map\n")
