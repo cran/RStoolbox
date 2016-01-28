@@ -5,8 +5,9 @@
 \title{Spectral Indices}
 \usage{
 spectralIndices(img, blue = NULL, green = NULL, red = NULL, nir = NULL,
-  swir1 = NULL, swir2 = NULL, indices = NULL, index = NULL,
-  coefs = list(L = 0.5, G = 2.5, L_evi = 1, C1 = 6, C2 = 7.5, s = 1), ...)
+  swir1 = NULL, swir2 = NULL, scaleFactor = 1, indices = NULL,
+  index = NULL, coefs = list(L = 0.5, G = 2.5, L_evi = 1, C1 = 6, C2 = 7.5,
+  s = 1, swir2ccc = NULL, swir2coc = NULL), ...)
 }
 \arguments{
 \item{img}{Raster* object. Typically remote sensing imagery, which is to be classified.}
@@ -23,6 +24,8 @@ spectralIndices(img, blue = NULL, green = NULL, red = NULL, nir = NULL,
 
 \item{swir2}{Character or integer. Short-wave-infrared band (1400-1800nm).}
 
+\item{scaleFactor}{Numeric. Scale factor for the conversion of scaled reflectances to [0,1] value range (applied as reflectance/scaleFactor) Neccesary for claculating EVI/EVI2 with scaled reflectance values.}
+
 \item{indices}{Character. One or more spectral indices to calculate (see Details). By default (NULL) all implemented indices given the spectral bands which are provided will be calculated.}
 
 \item{index}{Character. Alias for \code{indices}.}
@@ -38,19 +41,36 @@ RasterBrick or a RasterLayer if length(indices) == 1
 Calculate a suite of multispectral indices such as NDVI, SAVI etc. in an efficient way.
 }
 \details{
-\code{spectralIndices} calculates all indices in one go, i.e. one call to overlay, which is far more efficient, than calculating each index separately (for large rasters).
+\code{spectralIndices} calculates all indices in one go in C++, i.e. one call to raster::calc, which is far more efficient, than calculating each index separately (for large rasters).
 By default all indices which can be calculated given the specified indices will be calcultated. If you don't want all indices, use the \code{indices} argument to specify exactly which indices are to be calculated.
 See the table bellow for index names and required bands.
+   
+Index values outside the valid value ranges (if such a range exists) will be set to NA. For example a pixel with NDVI > 1 will be set to NA.
 
-\code{coefs} can be used to redefine additional coefficients used to calculate \code{EVI} (\code{L_evi, C1, C2, G}), and \code{SAVI} (\code{L}).
-Although the defaults are sensible values, it can make sense to adjust the SAVI soil brigthness factor \code{L} depending on the characteristics of the vegetation cover in your scene.
-  
-
-
+ 
 
 
 
-\tabular{lllll}{ \strong{ Index } \tab \strong{ Description } \tab \strong{ Source } \tab \strong{ Bands } \tab \strong{ Formula } \cr DVI \tab Difference Vegetation Index \tab Richardson1977 \tab \code{red, nir} \tab \eqn{s * nir - red} \cr CTVI \tab Corrected Transformed Vegetation Index \tab Perry1984 \tab \code{red, nir} \tab \eqn{(nir - red)/(nir + red) + 0.5} \cr EVI \tab Enhanced Vegetation Index \tab Huete1999 \tab \code{red, nir, blue} \tab \eqn{G * ((nir - red)/(nir + C1 * red - C2 * blue + L_evi))} \cr EVI2 \tab Two-band Enhanced Vegetation Index \tab Jiang 2008 \tab \code{red, nir} \tab \eqn{G * (nir - red)/(nir + 2.4 * red + 1)} \cr GEMI \tab Global Environmental Monitoring Index \tab Pinty1992 \tab \code{red, nir} \tab \eqn{(((nir^2 - red^2) * 2 + (nir * 1.5) + (red * 0.5))/(nir + red + 0.5)) * (1 - ((((nir^2 - red^2) * 2 + (nir * 1.5) + (red * 0.5))/(nir + red + 0.5)) * 0.25)) - ((red - 0.125)/(1 - red))} \cr LSWI \tab Land Surface Water Index \tab Xiao2004 \tab \code{nir, swir1} \tab \eqn{(nir - swir1)/(nir + swir1)} \cr MNDWI \tab Modified Normalised Difference Water Index \tab  \tab \code{green, swir1} \tab \eqn{(green - swir1)/(green + swir1)} \cr MSAVI \tab Modified Soil Adjusted Vegetation Index \tab Qi1994 \tab \code{red, nir} \tab \eqn{nir + 0.5 - (0.5 * sqrt((2 * nir + 1)^2 - 8 * (nir - (2 * red))))} \cr MSAVI2 \tab Modified Soil Adjusted Vegetation Index 2 \tab Qi1994 \tab \code{red, nir} \tab \eqn{(2 * (nir + 1) - sqrt((2 * nir + 1)^2 - 8 * (nir - red)))/2} \cr NBRI \tab Normalised Burn Ratio Index \tab  \tab \code{nir, swir2} \tab \eqn{(nir - swir2)/(nir + swir2)} \cr NDVI \tab Normalised Difference Vegetation Index \tab Rouse1974 \tab \code{red, nir} \tab \eqn{(nir - red)/(nir + red)} \cr NDWI \tab Normalised Difference Water Index \tab Gao1996 \tab \code{green, nir} \tab \eqn{(green - nir)/(green + nir)} \cr NRVI \tab Normalised Ratio Vegetation Index \tab Baret1991 \tab \code{red, nir} \tab \eqn{(red/nir - 1)/(red/nir + 1)} \cr RVI \tab Ratio Vegetation Index \tab  \tab \code{red, nir} \tab \eqn{red/nir} \cr SATVI \tab Soil Adjusted Total Vegetation Index \tab  \tab \code{red, swir1, swir2} \tab \eqn{(swir1 - red)/(swir1 + red + L) * (1 + L) - (swir2/2)} \cr SAVI \tab Soil Adjusted Vegetation Index \tab Huete1988 \tab \code{red, nir} \tab \eqn{(nir - red) * (1 + L)/(nir + red + L)} \cr SLAVI \tab Specific Leaf Area Vegetation Index \tab Lymburger2000 \tab \code{red, nir, swir2} \tab \eqn{nir/(red + swir2)} \cr SR \tab Simple Ratio Vegetation Index \tab Birth1968 \tab \code{red, nir} \tab \eqn{nir/red} \cr TVI \tab Transformed Vegetation Index \tab Deering1975 \tab \code{red, nir} \tab \eqn{sqrt((nir - red)/(nir + red) + 0.5)} \cr TTVI \tab Thiam's Transformed Vegetation Index \tab Thiam1997 \tab \code{red, nir} \tab \eqn{sqrt(abs((nir - red)/(nir + red) + 0.5))} \cr WDVI \tab Weighted Difference Vegetation Index \tab Richardson1977 \tab \code{red, nir} \tab \eqn{nir - s * red} \cr DVI \tab Difference Vegetation Index \tab Richardson1977 \tab \code{red, nir} \tab \eqn{s * nir - red} }
+
+
+\tabular{lllll}{ \strong{ Index } \tab \strong{ Description } \tab \strong{ Source } \tab \strong{ Bands } \tab \strong{ Formula } \cr DVI \tab Difference Vegetation Index \tab Richardson1977 \tab \code{red, nir} \tab \eqn{s * nir - red} \cr CTVI \tab Corrected Transformed Vegetation Index \tab Perry1984 \tab \code{red, nir} \tab \eqn{(nir - red)/(nir + red) + 0.5} \cr EVI \tab Enhanced Vegetation Index \tab Huete1999 \tab \code{red, nir, blue} \tab \eqn{G * ((nir - red)/(nir + C1 * red - C2 * blue + L_evi))} \cr EVI2 \tab Two-band Enhanced Vegetation Index \tab Jiang 2008 \tab \code{red, nir} \tab \eqn{G * (nir - red)/(nir + 2.4 * red + 1)} \cr GEMI \tab Global Environmental Monitoring Index \tab Pinty1992 \tab \code{red, nir} \tab \eqn{(((nir^2 - red^2) * 2 + (nir * 1.5) + (red * 0.5))/(nir + red + 0.5)) * (1 - ((((nir^2 - red^2) * 2 + (nir * 1.5) + (red * 0.5))/(nir + red + 0.5)) * 0.25)) - ((red - 0.125)/(1 - red))} \cr LSWI \tab Land Surface Water Index \tab Xiao2004 \tab \code{nir, swir1} \tab \eqn{(nir - swir1)/(nir + swir1)} \cr MNDWI \tab Modified Normalised Difference Water Index \tab  \tab \code{green, swir1} \tab \eqn{(green - swir1)/(green + swir1)} \cr MSAVI \tab Modified Soil Adjusted Vegetation Index \tab Qi1994 \tab \code{red, nir} \tab \eqn{nir + 0.5 - (0.5 * sqrt((2 * nir + 1)^2 - 8 * (nir - (2 * red))))} \cr MSAVI2 \tab Modified Soil Adjusted Vegetation Index 2 \tab Qi1994 \tab \code{red, nir} \tab \eqn{(2 * (nir + 1) - sqrt((2 * nir + 1)^2 - 8 * (nir - red)))/2} \cr NBRI \tab Normalised Burn Ratio Index \tab  \tab \code{nir, swir2} \tab \eqn{(nir - swir2)/(nir + swir2)} \cr NDVI \tab Normalised Difference Vegetation Index \tab Rouse1974 \tab \code{red, nir} \tab \eqn{(nir - red)/(nir + red)} \cr NDVIC \tab Corrected Normalised Difference Vegetation Index \tab Nemani1993 \tab \code{red, nir, swir2} \tab \eqn{(nir - red)/(nir + red) * (1 - ((swir2 - swir2ccc)/(swir2coc - swir2ccc)))} \cr NDWI \tab Normalised Difference Water Index \tab Gao1996 \tab \code{green, nir} \tab \eqn{(green - nir)/(green + nir)} \cr NRVI \tab Normalised Ratio Vegetation Index \tab Baret1991 \tab \code{red, nir} \tab \eqn{(red/nir - 1)/(red/nir + 1)} \cr RVI \tab Ratio Vegetation Index \tab  \tab \code{red, nir} \tab \eqn{red/nir} \cr SATVI \tab Soil Adjusted Total Vegetation Index \tab  \tab \code{red, swir1, swir2} \tab \eqn{(swir1 - red)/(swir1 + red + L) * (1 + L) - (swir2/2)} \cr SAVI \tab Soil Adjusted Vegetation Index \tab Huete1988 \tab \code{red, nir} \tab \eqn{(nir - red) * (1 + L)/(nir + red + L)} \cr SLAVI \tab Specific Leaf Area Vegetation Index \tab Lymburger2000 \tab \code{red, nir, swir2} \tab \eqn{nir/(red + swir2)} \cr SR \tab Simple Ratio Vegetation Index \tab Birth1968 \tab \code{red, nir} \tab \eqn{nir/red} \cr TVI \tab Transformed Vegetation Index \tab Deering1975 \tab \code{red, nir} \tab \eqn{sqrt((nir - red)/(nir + red) + 0.5)} \cr TTVI \tab Thiam's Transformed Vegetation Index \tab Thiam1997 \tab \code{red, nir} \tab \eqn{sqrt(abs((nir - red)/(nir + red) + 0.5))} \cr WDVI \tab Weighted Difference Vegetation Index \tab Richardson1977 \tab \code{red, nir} \tab \eqn{nir - s * red} }
+
+
+Some indices require additional parameters, such as the slope of the soil line wich are specified via a list to the \code{coefs} argument. 
+Although the defaults are sensible values, values like the soil brigthness factor \code{L} for SAVI should be adapted depending on the characteristics of the scene.
+The coefficients are:
+\tabular{lll}{
+\strong{Coefficient} \tab \strong{Description} \tab \strong{Affected Indices} \cr
+\code{s} \tab slope of the soil line \tab DVI, WDVI \cr
+\code{L_evi, C1, C2, G} \tab various \tab EVI \cr
+\code{L} \tab soil brightness factor \tab SAVI, SATVI \cr
+\code{swir2ccc} \tab minimum swir2 value (completely closed forest canopy) \tab NDVIC \cr
+\code{swir2coc} \tab maximum swir2 value (completely open canopy) \tab NDVIC \cr
+}
+
+
+The wavelength band names are defined following Schowengertd 2007, p10 as:
+\tabular{llll}{ \strong{ Band } \tab \strong{ Description } \tab \strong{ Wavl_min } \tab \strong{ Wavl_max } \cr vis \tab visible \tab   400 \tab    700 \cr nir \tab near infra-red \tab   700 \tab   1100 \cr swir1 \tab short-wave infra-red \tab  1100 \tab   1351 \cr swir2 \tab short-wave infra-red \tab  1400 \tab   1800 \cr swir3 \tab short-wave infra-red \tab  2000 \tab   2500 \cr mir1 \tab mid-wave infra-red \tab  3000 \tab   4000 \cr mir2 \tab mid-wave infra-red \tab 45000 \tab   5000 \cr tir1 \tab thermal infra-red \tab  8000 \tab   9500 \cr tir2 \tab thermal infra-red \tab 10000 \tab 140000 }
 }
 \examples{
 library(ggplot2)
@@ -64,7 +84,7 @@ ggR(ndvi, geom_raster = TRUE) +
         scale_fill_gradientn(colours = c("black", "white")) 
 
 ## Calculate all possible indices, given the provided bands 
-## Convert DNs to reflectance (only required to calculate EVI and EVI2)
+## Convert DNs to reflectance (required to calculate EVI and EVI2)
 mtlFile  <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", package="RStoolbox")
 lsat_ref <- radCor(lsat, mtlFile, method = "apref")
 

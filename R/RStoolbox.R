@@ -47,14 +47,16 @@
 #' \item \code{\link{ggRGB}}: efficient plotting of remote sensing imagery in RGB with ggplot2
 #' }
 #' 
-#' @import raster sp rgeos plyr caret reshape2 ggplot2 
+#' @import raster sp plyr caret ggplot2 
+#' @importFrom rgeos gArea gBuffer gDifference gDisjoint gIntersection gIntersects gUnionCascaded intersect row.names 
+#' @importFrom reshape2 melt
 #' @importFrom foreach getDoParRegistered 
 #' @importFrom doParallel registerDoParallel
 #' @importFrom codetools findGlobals
 #' @importFrom geosphere areaPolygon
 #' @importFrom parallel parLapply parSapply parApply clusterExport
 #' @importFrom XML xmlParse xmlToList
-#' @importFrom stats coefficients lm ecdf median approxfun knots kmeans na.omit complete.cases loadings princomp cov
+#' @importFrom stats coefficients lm ecdf median approxfun knots kmeans na.omit complete.cases loadings princomp cov filter
 #' @importFrom graphics par abline
 #' @importFrom methods as
 #' @importFrom utils read.csv read.delim str write.table data
