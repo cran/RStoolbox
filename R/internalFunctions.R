@@ -234,20 +234,32 @@
 #' @keywords internal
 .subdividePolys <- function(polygons, res = 1) {
     pl <- lapply(seq_along(polygons), function(i){
-                ex       <- raster(polygons[i,])
-                res(ex)  <- res
-                pgrid <- rasterToPolygons(ex)
-                pgrid$layer = 1
+                ex      <- raster(polygons[i,])
+                res(ex) <- res
+                pgrid   <- rasterToPolygons(ex)
+                pgrid$layer <- 1
                 pp    <- gIntersection(pgrid, polygons[i,], byid=TRUE, drop_lower_td = TRUE)
                 pp    <- as(pp, "SpatialPolygonsDataFrame")
-                pp$dummy <- polygons$layer[i]
-                names(pp) <- names(polygons)
-                pp
+                data  <- polygons@data[i,]
+				pp@data <- data.frame(data, rn = paste0(rownames(data),"_", seq_along(pp)), row.names = "rn")
+				pp <- spChFIDs(pp, rownames(pp@data))
+				pp
             })
     plo <- do.call("rbind", pl)
     projection(plo) <- projection(polygons)
     return(plo)
 }
+
+
+#' RMSE
+#' @param pred predicted values
+#' @param obs observed values
+#' @noRd 
+#' @keywords internal
+.rmse <- function (pred, obs) {
+	sqrt(mean((pred - obs)^2, na.rm = T))
+}
+
 
 
 #' On package startup
@@ -275,5 +287,8 @@
 .onUnload <- function (libpath) {
     library.dynam.unload("RStoolbox", libpath)
 }
+
+
+
 
 

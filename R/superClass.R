@@ -250,7 +250,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
 	.vMessage("Starting to fit model")   
 	.registerDoParallel()
 	indexIn <- if(polygonBasedCV) lapply(1:kfold, function(x) which(x != indexOut)) 
-	if(model == "mlc") model = mlcCaret
+	if(model == "mlc") model <- mlcCaret
 	set.seed(seeds[[1]])
 	caretModel 	<- train(response ~ ., data = dataSet, method = model, tuneLength = tuneLength, 
 			trControl = trainControl(method = "cv", number = kfold, index = indexIn, savePredictions = "final"), ...)   
@@ -310,7 +310,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
 			validation <- confusionMatrix(data = valiSet$prediction, reference = valiSet$reference)              
 		} else {
 			valiSet$residuals <- valiSet$reference - valiSet$prediction
-			validation <-  data.frame(RMSE = RMSE(valiSet$prediction, valiSet$reference), Rsquared = cor(valiSet$prediction, valiSet$reference, use = "complete.obs")^2)   
+			validation <-  data.frame(RMSE = .rmse(valiSet$prediction, valiSet$reference), Rsquared = cor(valiSet$prediction, valiSet$reference, use = "complete.obs")^2)   
 		}
 		validation <- list(performance = validation, validationSet = valiSet)
 	} else {
