@@ -60,7 +60,8 @@
 #' @examples 
 #' library(raster)
 #' ## Import meta-data and bands based on MTL file
-#' mtlFile  <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", package="RStoolbox")
+#' mtlFile  <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", 
+#' 								package="RStoolbox")
 #' metaData <- readMeta(mtlFile)
 #' \donttest{lsat     <- stackMeta(mtlFile)}
 #' 
@@ -104,7 +105,7 @@ radCor <-	function(img, metaData, method = "apref", bandSet = "full", hazeValues
 	
 	## Query internal db	
 	# TODO: add support for non-landsat data
-	# The present implementation is geared towards use with Landsat 5:8 data. However, radCor can be used with other sensors as well (currently methods 'rad','apref','sdos' only). 
+	# The present implementation is geared towards use with Landsat 4:8 data. However, radCor can be used with other sensors as well (currently methods 'rad','apref','sdos' only). 
 	# To do so create an \link{ImageMetaData} object containing the following information: 
 	
 	sDB <- .LANDSATdb[[sat]][[sensor]]
@@ -116,7 +117,7 @@ radCor <-	function(img, metaData, method = "apref", bandSet = "full", hazeValues
 	}	
 	
 	origBands 	<- names(img)   
-	tirBands	<- list(LANDSAT5 = "B6_dn", LANDSAT7 = c("B6_dn", "B6_VCID_1_dn", "B6_VCID_2_dn"), LANDSAT8 = c("B10_dn", "B11_dn") )[[sat]]	
+	tirBands	<- list(LANDSAT4="B6_dn", LANDSAT5 = "B6_dn", LANDSAT7 = c("B6_dn", "B6_VCID_1_dn", "B6_VCID_2_dn"), LANDSAT8 = c("B10_dn", "B11_dn") )[[sat]]	
 	tirBands 	<- origBands[origBands %in% tirBands]  
 	tirBands	<- tirBands[tirBands %in% bandSet]
 	if(length(tirBands) == 0) tirBands <- NULL

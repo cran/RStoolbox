@@ -2,7 +2,7 @@
 #' 
 #' estimates the digital number (DN) pixel value of *dark* objects for the visible wavelength range.
 #' 
-#' @param x Raster* object or a previous result from \code{estimateHaze(x , returnTables = TRUE} from which to estimate haze
+#' @param x Raster* object or a previous result from \code{estimateHaze} with \code{returnTables = TRUE} from which to estimate haze
 #' @param hazeBands Integer or Character. Band number or bandname from which to estimate atmospheric haze (optional if x contains only one layer)
 #' @param darkProp Numeric. Proportion of pixels estimated to be dark.
 #' @param maxSlope Logical. Use \code{darkProp} only as an upper boundary and search for the DN of maximum slope in the histogram below this value.
@@ -84,7 +84,8 @@ estimateHaze <- function(x, hazeBands, darkProp = 0.01, maxSlope = TRUE, plot = 
     ## Run estimation for each band separately
     out   <- lapply(hazeBands, function(bi) {
                 if(!preCalc) {
-                    tf <- freq(x[[bi]], useNA = "no")             
+                    tf <- freq(x[[bi]], useNA = "no") 
+                    tf <- tf[order(tf[,1]),]
                 } else {
                     tf <- x$table[[bi]]
                 }

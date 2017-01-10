@@ -31,12 +31,16 @@ trainList <- list(projected = list(polygons = poly, points = pts, img = lsat),
 ## Tiny raster bug caused superClass to fail when predictions were written to .grd file 
 test_that("NA in raster remains NA",{
 			expect_is(sc <- superClass(lsNA, trainData = pts, responseCol = "class", model = "rf", filename = rasterTmpFile(), trainPartition = 0.7, predict = TRUE), "superClass")
-			## Activate once raster is fixed:
-			#expect_equal(sum(is.na(sc$map[1:100,])), 100*ncol(lsNA)) 
+			expect_equal(sum(is.na(sc$map[1:100,])), 100*ncol(lsNA)) 
 			expect_false(anyNA(sc$map[101:nrow(lsNA),]))			
 		}) 
 
 
+## Checks after clipping 
+test_that("fails if no validation points remain after clipping",{
+            expect_error(sc <- superClass(lsNA, trainData = pts, minDist=1000, responseCol = "class", trainPartition = 0.7), "no validation points remained")
+            expect_error(sc <- superClass(lsNA, trainData = poly, minDist=1000, responseCol = "class", trainPartition = 0.7), "no validation polygons remain")
+        })
 
 ## Maximum likelihood custom model
 test_that("maximum likelihood model",
@@ -56,7 +60,7 @@ for(proj in c("projected", "geographical")){
 		info <- paste(c("train type = ", type, " | coordinates = ", proj), collapse = "")       
 		train <- trainList[[proj]][[type]]
 		img   <- trainList[[proj]][["img"]]
-		
+		geometry <- if(type=="polygons") "SpatialPolygons" else "SpatialPoints"
 		## No prediction	
 		set.seed(1)
 		sc <- superClass(img, trainData = train, nSamples = 50, responseCol = "class", model = "pls", 
@@ -81,6 +85,20 @@ for(proj in c("projected", "geographical")){
 					expect_equal(cellStats(sc2$map - sc3$map, sum), 0, info = info)
 				})
 		
+        
+        test_that("validation sample coords and geometries are returned", {						
+                    expect_is(sc$validation$validationGeometry, geometry, info = info) 
+                    expect_is(sc2$validation$validationGeometry, geometry, info = info) 
+                    expect_is(sc3$validation$validationGeometry, geometry, info = info) 
+                    expect_is(sc$validation$validationSamples, "data.frame", info = info) 
+                    expect_is(sc2$validation$validationSamples, "data.frame", info = info) 
+                    expect_is(sc3$validation$validationSamples, "data.frame", info = info) 
+                    expect_equal(colnames(sc$validation$validationSamples), c("reference", "prediction", "cell", "x", "y"), info = info) 
+                    expect_equal(colnames(sc2$validation$validationSamples), c("reference", "prediction", "cell", "x", "y"), info = info) 
+                    expect_equal(colnames(sc3$validation$validationSamples), c("reference", "prediction", "cell", "x", "y"), info = info) 
+                   
+                })
+        
 		
 		test_that("predict.superClass map is identical to superClass$map",{
 					expect_true(compareRaster(sc2$map, predict(sc2, img), values = TRUE), info = info)                      

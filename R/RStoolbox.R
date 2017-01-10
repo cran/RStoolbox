@@ -48,7 +48,7 @@
 #' }
 #' 
 #' @import raster sp 
-#' @importFrom ggplot2 aes aes_string annotation_raster coord_equal fortify geom_raster ggplot scale_fill_discrete scale_fill_gradientn scale_fill_identity   
+#' @importFrom ggplot2 aes aes_string annotation_raster coord_equal fortify geom_raster geom_blank ggplot scale_fill_discrete scale_fill_gradientn scale_fill_identity   
 #' @importFrom caret confusionMatrix train trainControl postResample  createDataPartition createFolds getTrainPerf
 #' @importFrom rgeos gArea gBuffer gDifference gDisjoint gIntersection gIntersects gUnionCascaded intersect row.names 
 #' @importFrom reshape2 melt
@@ -56,12 +56,12 @@
 #' @importFrom doParallel registerDoParallel
 #' @importFrom codetools findGlobals
 #' @importFrom geosphere areaPolygon
-#' @importFrom parallel parLapply parSapply parApply clusterExport
+#' @importFrom parallel parLapply parSapply parApply clusterExport makeCluster
 #' @importFrom XML xmlParse xmlToList
 #' @importFrom stats coefficients lm ecdf median approxfun knots kmeans na.omit complete.cases loadings princomp cov filter cor
 #' @importFrom graphics par abline
 #' @importFrom methods as
-#' @importFrom utils read.csv read.delim str write.table data capture.output
+#' @importFrom utils read.csv read.delim read.table str write.table data capture.output
 #' @importFrom grDevices hsv
 #' @useDynLib RStoolbox
 #' @importFrom Rcpp sourceCpp

@@ -12,7 +12,7 @@ pifMatch(img, ref, method = "cor", quantile = 0.95, returnPifMap = TRUE,
 
 \item{ref}{RasterStack or RasterBruck. Reference image.}
 
-\item{method}{Method to calculate pixel similariry. Options: euclidean distance ('ed'), spectral angle}
+\item{method}{Method to calculate pixel similariry. Options: euclidean distance ('ed'), spectral angle ('sam') or pearson correlation coefficient ('cor').}
 
 \item{quantile}{Numeric. Threshold quantile used to identify PIFs}
 
@@ -55,8 +55,10 @@ data(lsat)
 ## Create fake example data
 ## In practice this would be an image from another acquisition date
 lsat_b <- log(lsat)  
+
 ## Run pifMatch and return similarity layer, invariant features mask and models
-lsat_b_adj <- pifMatch(lsat_b, lsat, returnPifMap = TRUE, returnSimMap = TRUE, returnModels = TRUE)
+lsat_b_adj <- pifMatch(lsat_b, lsat, returnPifMap = TRUE, 
+ 						returnSimMap = TRUE, returnModels = TRUE)
 
 ## Pixelwise similarity
 ggR(lsat_b_adj$simMap, geom_raster = TRUE)

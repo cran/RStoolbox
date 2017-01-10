@@ -4,7 +4,7 @@
 #' 
 #' @param img RasterStack or RasterBrick. Image to be adjusted.
 #' @param ref RasterStack or RasterBruck. Reference image.
-#' @param method Method to calculate pixel similariry. Options: euclidean distance ('ed'), spectral angle
+#' @param method Method to calculate pixel similariry. Options: euclidean distance ('ed'), spectral angle ('sam') or pearson correlation coefficient ('cor').
 #' @param quantile Numeric. Threshold quantile used to identify PIFs
 #' @param returnPifMap Logical. Return a binary raster map ot pixels which were identified as pesudo-invariant features.
 #' @param returnSimMap Logical. Return the similarity map as well
@@ -38,8 +38,10 @@
 #' ## Create fake example data
 #' ## In practice this would be an image from another acquisition date
 #' lsat_b <- log(lsat)  
+#' 
 #' ## Run pifMatch and return similarity layer, invariant features mask and models
-#' lsat_b_adj <- pifMatch(lsat_b, lsat, returnPifMap = TRUE, returnSimMap = TRUE, returnModels = TRUE)
+#' lsat_b_adj <- pifMatch(lsat_b, lsat, returnPifMap = TRUE, 
+#'  						returnSimMap = TRUE, returnModels = TRUE)
 #' 
 #' ## Pixelwise similarity
 #' ggR(lsat_b_adj$simMap, geom_raster = TRUE)
@@ -66,6 +68,7 @@ pifMatch <- function(img, ref, method = "cor", quantile = 0.95, returnPifMap = T
 	}
 	
 	## Calculate pixelwise similarity
+    if(!method %in% c("ed", "sam", "cor")) stop("method must be one of 'ed', 'cor' or 'sam'", call. = FALSE)
 	nmeth <- c(ed=1, sam=2, cor=3)[method]	
 	pifield <- overlay(img, ref, fun = function(x,y) {pwSimilarityCpp(x,y,nmeth)})
 	names(pifield) <- method

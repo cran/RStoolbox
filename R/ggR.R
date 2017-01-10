@@ -21,7 +21,8 @@
 #' \tabular{ll}{
 #'  \code{ggObj = TRUE}:   \tab ggplot2 plot \cr
 #'  \code{ggLayer = TRUE}: \tab ggplot2 layer to be combined with an existing ggplot2 \cr
-#'  \code{ggObj = FALSE}:  \tab data.frame in long format suitable for plotting with ggplot2, includes the pixel values and the calculated colors  \cr  
+#'  \code{ggObj = FALSE}:  \tab data.frame in long format suitable for plotting with ggplot2, 
+#'                          includes the pixel values and the calculated colors  \cr  
 #' }
 #' @details
 #' When \code{img} contains factor values and \code{annotation=TRUE}, the raster values will automatically be converted
@@ -138,7 +139,7 @@ ggR <- function(img, layer = 1, maxpixels = 500000,  alpha = 1, hue = 1, sat = 0
         
         if(annotation) {   
             dummy <- data.frame(x=ex[1:2],y=ex[3:4])       
-            p <- ggplot(dummy, aes(x,y))  + ggl
+            p <- ggplot()  + ggl + geom_blank(data = dummy, aes(x,y))
             if(coord_equal) p <- p + coord_equal()
             return(p)
         } else {
