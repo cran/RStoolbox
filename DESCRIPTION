@@ -1,7 +1,7 @@
 Package: RStoolbox
 Type: Package
 Title: Tools for Remote Sensing Data Analysis
-Version: 0.1.7
+Version: 0.1.8
 Authors@R: c(
     person("Benjamin", "Leutner", role=c("cre", "aut"), email="benjamin.leutner@uni-wuerzburg.de"),
     person("Ned", "Horning", role ="aut", email="horning@amnh.org")
@@ -20,11 +20,11 @@ Suggests: rgdal, randomForest, kernlab, e1071, gridExtra, pls, testthat
 LinkingTo: Rcpp, RcppArmadillo
 License: GPL (>= 3)
 LazyData: true
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1
 NeedsCompilation: yes
-Packaged: 2017-01-10 18:26:59 UTC; bel03nu
+Packaged: 2017-04-15 13:24:10 UTC; bel03nu
 Author: Benjamin Leutner [cre, aut],
   Ned Horning [aut]
 Maintainer: Benjamin Leutner <benjamin.leutner@uni-wuerzburg.de>
 Repository: CRAN
-Date/Publication: 2017-01-10 19:55:30
+Date/Publication: 2017-04-15 13:53:16 UTC

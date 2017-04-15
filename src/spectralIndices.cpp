@@ -1,37 +1,55 @@
-#include <Rcpp.h>
+#include<Rcpp.h>
+
 using namespace Rcpp;
 
 //[[Rcpp::export]]
 NumericMatrix spectralIndicesCpp(NumericMatrix x, CharacterVector indices,
 		 const int redBand,  const int blueBand, const int greenBand, const int nirBand,
 		 const int swir1Band, const int swir2Band, const int swir3Band,
+		 int maskLayer, const int maskValue,
 		 const double L,  const double s, const double G, const double C1,
 		 const double C2, double Levi, const double swir2ccc, const double swir2cdiff, const double sf) {
 
 	int nind = indices.size();
 	int nsamp = x.nrow();
 
-/***
-	for(int ro = 0; ro < nsamp; ++ro) {
-		for(int co = 0; co < nind; ++co) {
-			if(ISNAN(x(ro,co))) x(ro,co) = NA_REAL;
-		}
-	}
-***/
 	NumericMatrix out(nsamp, nind);
 	NumericVector blue, green, red, nir, swir1, swir2, swir3;
-
-	if(blueBand  != NA_INTEGER)     blue = x(_,blueBand - 1);
-	if(greenBand != NA_INTEGER)    green = x(_,greenBand - 1);
-	if(redBand   != NA_INTEGER)      red = x(_,redBand - 1);
-	if(nirBand   != NA_INTEGER)      nir = x(_,nirBand - 1);
-	if(swir1Band != NA_INTEGER)    swir1 = x(_,swir1Band - 1);
-	if(swir2Band != NA_INTEGER)    swir2 = x(_,swir2Band - 1);
-	if(swir3Band != NA_INTEGER)    swir3 = x(_,swir3Band - 1);
-
-    if(sf != 1) {
-    	Levi = Levi * sf;
+    
+    // Apply mask layer
+    if(maskLayer != NA_INTEGER){
+        maskLayer-=1 ;
+        int nx = x.nrow();
+        std::vector<int> m;
+        m.reserve(nx);
+        if(IntegerVector::is_na(maskValue)){
+            for(int i = 0; i < nx; i++) {
+                if (ISNAN(x(i, maskLayer))) m.push_back(i);
+            }
+        } else {
+            for(int i = 0; i < nx; i++) {
+                if (x(i, maskLayer) == maskValue) m.push_back(i);
+            }
+        } 
+        
+        for(int j = 0; j < x.ncol(); j++) { 
+            if (j == maskLayer) continue;
+            for(int i = 0; i < m.size(); i++) {
+                 x(m[i],j) = NA_REAL;
+            }    
+         }
     }
+
+	if(blueBand  != NA_INTEGER)     blue = x(_,blueBand - 1) / sf;
+	if(greenBand != NA_INTEGER)    green = x(_,greenBand - 1) / sf;
+	if(redBand   != NA_INTEGER)      red = x(_,redBand - 1) / sf;
+	if(nirBand   != NA_INTEGER)      nir = x(_,nirBand - 1) / sf;
+	if(swir1Band != NA_INTEGER)    swir1 = x(_,swir1Band - 1) / sf;
+	if(swir2Band != NA_INTEGER)    swir2 = x(_,swir2Band - 1) / sf;
+	if(swir3Band != NA_INTEGER)    swir3 = x(_,swir3Band - 1) / sf;
+
+   
+
 	for(int j = 0; j < nind; ++j) {
 
 		if(indices[j] == "DVI") {
@@ -55,7 +73,7 @@ NumericMatrix spectralIndicesCpp(NumericMatrix x, CharacterVector indices,
 		else if(indices[j] == "EVI2") {
 				// Two-band Enhanced vegetation index
 				// Jiang et al 2008
-				out(_,j) = G * ((nir - red) / (nir + 2.4 * red + sf));
+				out(_,j) = G * ((nir - red) / (nir + 2.4 * red ));
 				out(_,j) = ifelse(is_na(out(_,j)) | (out(_,j) > 1.0) | (out(_,j) < -1.0) , NA_REAL, out(_,j));
 			}
 
@@ -65,6 +83,12 @@ NumericMatrix spectralIndicesCpp(NumericMatrix x, CharacterVector indices,
 							(nir + red + 0.5)) * 0.25)) - ((red - 0.125) / (1 - red));
 			out(_,j) = ifelse(is_na(out(_,j)), NA_REAL, out(_,j));
 		}	
+		else if(indices[j] == "GNDVI") {
+					// green Normalized diff vegetation index: -> more sensitive to cholorphyll than ndvi
+					// Gitelson, A., and M. Merzlyak. "Remote Sensing of Chlorophyll Concentration in Higher Plant Leaves." Advances in Space Research 22 (1998): 689-692
+					out(_,j) = (nir - green)/( nir + green);
+					out(_,j) = ifelse(is_na(out(_,j)) | (out(_,j) > 1.0) | (out(_,j) < -1.0) , NA_REAL, out(_,j));
+				}
 		else if(indices[j] == "MNDWI") {
             // Modified Normalised Difference Water Index
 			out(_,j) = (green-swir2) / (green+swir2);
