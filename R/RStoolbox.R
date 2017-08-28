@@ -37,7 +37,7 @@
 #' \item \code{\link{rasterCVA}}: change vector analysis
 #' \item \code{\link{unsuperClass}}: unsupervised classification
 #' \item \code{\link{superClass}}: supervised classification
-#' \item \code{\link{fCover}}: fractional cover of coarse resolution imagery based on high resolution classificaton
+#' \item \code{\link{fCover}}: fractional cover of coarse resolution imagery based on high resolution classification
 #' }
 #' 
 #' @section Data Display:
@@ -48,6 +48,7 @@
 #' }
 #' 
 #' @import raster sp 
+#' @importFrom rgdal readOGR
 #' @importFrom ggplot2 aes aes_string annotation_raster coord_equal fortify geom_raster geom_blank ggplot scale_fill_discrete scale_fill_gradientn scale_fill_identity   
 #' @importFrom caret confusionMatrix train trainControl postResample  createDataPartition createFolds getTrainPerf
 #' @importFrom rgeos gArea gBuffer gDifference gDisjoint gIntersection gIntersects gUnionCascaded intersect row.names 
