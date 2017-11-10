@@ -1,7 +1,7 @@
 Package: RStoolbox
 Type: Package
 Title: Tools for Remote Sensing Data Analysis
-Version: 0.1.9
+Version: 0.1.10
 Authors@R: c(
     person("Benjamin", "Leutner", role=c("cre", "aut"), email="benjamin.leutner@uni-wuerzburg.de"),
     person("Ned", "Horning", role ="aut", email="horning@amnh.org")
@@ -12,6 +12,7 @@ Description: Toolbox for remote sensing image processing and analysis such as
 URL: http://bleutner.github.io/RStoolbox,
         https://github.com/bleutner/RStoolbox
 BugReports: https://github.com/bleutner/RStoolbox/issues
+Encoding: UTF-8
 Depends: R (>= 3.1.0)
 Imports: raster (>= 2.3-40), caret (>= 6.0-64), sp, XML, geosphere,
         ggplot2, reshape2, rgeos, rgdal, codetools, parallel,
@@ -22,9 +23,9 @@ License: GPL (>= 3)
 LazyData: true
 RoxygenNote: 6.0.1.9000
 NeedsCompilation: yes
-Packaged: 2017-08-28 15:40:22 UTC; bel03nu
+Packaged: 2017-11-10 15:14:29 UTC; bel03nu
 Author: Benjamin Leutner [cre, aut],
   Ned Horning [aut]
 Maintainer: Benjamin Leutner <benjamin.leutner@uni-wuerzburg.de>
 Repository: CRAN
-Date/Publication: 2017-08-28 17:04:40 UTC
+Date/Publication: 2017-11-10 18:06:39 UTC
