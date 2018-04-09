@@ -1,6 +1,6 @@
-056375d441a77b732531539d1fa63730 *DESCRIPTION
+82c856f26cb97bff084084e8135d3ef5 *DESCRIPTION
 08b3599bdc545d9955d5c7f51e44d36a *NAMESPACE
-dc2cc129162f8dd29acfe9f697e35f8b *NEWS
+5ad47db2074220024324d089209a9866 *NEWS
 d15063f839f49e33529017a5fd496e5b *R/RStoolbox.R
 ae9650c7166a57b5f3a8f0931509c5ef *R/RcppExports.R
 8a41c0e80efd566d54c7ae0edbf7f23b *R/classifyQA.R
@@ -107,7 +107,7 @@ b3aa6329e4133927649abfb9d5e15d05 *man/writeSLI.Rd
 f49ced896b7240bb53ea9ac67bf53d97 *src/entropy.cpp
 05c1241acc96c991f74302ba853235ac *src/gainOffsetRescale.cpp
 09e2e8c4283c808a464b6d22d36768ba *src/init.c
-16302e74baa3dd59014363c9dc9f98a4 *src/nnls_solver.cpp
+596fb60aa083c2d6d3c24cb7d14d491d *src/nnls_solver.cpp
 eabbe049fad1ba60598f15ae686b5131 *src/normImage.cpp
 fb3c6ce8368517fd51d4a0d85c5a61df *src/predictKmeans.cpp
 75349944978623383ac67a252d0f9669 *src/predictMlc.cpp
