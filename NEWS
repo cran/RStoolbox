@@ -1,3 +1,19 @@
+RStoolbox 0.2.4
+====================================
+New:
+
+* function `oneHotEncode`: splits a single rasterLayer into multiple layers (one per class)
+  with one-hot encoding, i.e. pixel value = 1 for matches, pixel value = 0 for all other classes (background).
+* `ggR()` can now display more than one layer. Each layer can be plotted to a subplot in a multi-panel grafic.
+* `encodeQA()`, `decodeQA()` and `classifyQA()` can now deal with the new QA format introduced with Landsat Collection data. Legacy QA designations can still be interpreted by setting the `legacy` argument.
+* new `predict()` method for unsupervised classification models (`unsuperClass`).
+
+Changes: 
+* all `radCor` DOS methods now work for Landsat 8 OLI
+
+Fixes:
+* fix `unsuperClass` for algorithms other than Hartigan-Wong (reported by Alex Ilich)
+
 RStoolbox 0.2.2
 =====================================
 New:
@@ -59,7 +75,7 @@ New:
 *  increased overall test coverage 
 
 Changes:
-* ESUN lookup tables for `radCor()` are adjusted to match current USGS reccomendations from: https://landsat.usgs.gov/esun
+* ESUN lookup tables for `radCor()` are adjusted to match current USGS recommendations from: https://landsat.usgs.gov/esun
 * `spectralIndices()` swir wavelength ranges are now defined consistently and correctly. 
    Bands formerly provided as swir1 (version <1.7.0) should now (>=1.7.0) be provided as swir2 and former swir2 as swir3 respectively (see docu). 
    The actual calculations were correct, but the naming was off. 
