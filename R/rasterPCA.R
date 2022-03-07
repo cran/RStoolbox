@@ -44,7 +44,7 @@
 #' grid.arrange(plots[[1]],plots[[2]], plots[[3]], ncol=2)
 #' }
 rasterPCA <- function(img, nSamples = NULL, nComp = nlayers(img), spca = FALSE,  maskCheck = TRUE, ...){      
-    
+    img <- .toRaster(img)
     if(nlayers(img) <= 1) stop("Need at least two layers to calculate PCA.")   
     ellip <- list(...)
     
@@ -69,7 +69,7 @@ rasterPCA <- function(img, nSamples = NULL, nComp = nlayers(img), spca = FALSE, 
         covMat <- layerStats(img, stat = "cov", na.rm = TRUE)
         model  <- princomp(covmat = covMat[[1]], cor=spca)
         model$center <- covMat$mean
-        model$n.obs  <- ncell(img)
+        model$n.obs  <- cellStats(!any(is.na(img)), sum)
         if(spca) {    
             ## Calculate scale as population sd like in in princomp
             S <- diag(covMat$covariance)

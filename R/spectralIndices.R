@@ -71,7 +71,9 @@ spectralIndices <- function(img,
     # TIR1  | thermal infra-red    |  8000  -   9500 nm
     # TIR2  | thermal infra-red    | 10000  - 140000 nm
     ##    
-    
+	img <- .toRaster(img)
+	if(!is.null(maskLayer)) maskLayer <- .toRaster(maskLayer)
+	
     if(!is.null(index)) indices <- index  ## argument translation for convenience
     if("LSWI" %in% toupper(indices)) stop("LSWI has been deprecated. Use NDWI2 instead; it is identical.")
     if(!is.null(swir1)) stop(paste0("Currently there is no spectral index requiring swir1.", 
@@ -215,6 +217,8 @@ spectralIndices <- function(img,
                 function(red, nir) {(((nir^2 - red^2) * 2 + (nir * 1.5) + (red * 0.5) ) / (nir + red + 0.5)) * (1 - ((((nir^2 - red^2) * 2 + (nir * 1.5) + (red * 0.5) ) / (nir + red + 0.5)) * 0.25)) - ((red - 0.125) / (1 - red))}), 
         GNDVI = list(c("Gitelson1998", "Green Normalised Difference Vegetation Index" ),
                 function(green, nir) {(nir-green)/(nir+green)}),
+		KNDVI = list(c("Camps-Valls2021", "Kernel Normalised Difference Vegetation Index"), 
+				function(red, nir) {tanh(((nir-red)/(nir+red)))^2}), 
         MCARI = list(c("Daughtery2000", "Modified Chlorophyll Absorption Ratio Index" ), 
                 function(green, red, redEdge1) {((redEdge1-red)-(redEdge1-green))*(redEdge1/red)}), 
         MNDWI = list(c("Xu2006", "Modified Normalised Difference Water Index"), 

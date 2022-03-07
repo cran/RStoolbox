@@ -6,10 +6,59 @@
 #' @keywords internal
 #' @noRd 
 .ESdist <- function(date){    
-    doy <- as.numeric(format(as.POSIXct(date), "%j"))
-    .ESdistance[doy]
+	doy <- as.numeric(format(as.POSIXct(date), "%j"))
+	.ESdistance[doy]
 }
 
+#' Convert terra::SpatRaster to raster::RasterStack
+#' 
+#' This is a temporary function used to add terra support to RStoolbox, while RStoolbox internals 
+#' are still implemented based on raster functionality. In the long run it is
+#' aimed to re-base RStoolbox on terra
+#' @param x raster or terra object
+#' @return RasterStack
+#' @keywords internal
+#' @noRd 
+.toRaster <- function(x) {
+	if (inherits(x, "SpatRaster")) {
+		return(stack(x))
+	} else {
+		return(x)
+	}
+}
+
+#' Convert sf objects to sp objects
+#' 
+#' This is a temporary function used to add sf support to RStoolbox, while RStoolbox internals 
+#' are still implemented based on sp functionality. In the long run it is
+#' aimed to re-base RStoolbox on sf
+#' @param x sf or sp object
+#' @return sf object
+#' @keywords internal
+#' @noRd 
+.toSp <- function(x) {
+	if (inherits(x, "sf")) {
+		return(as_Spatial(x))
+	} else {
+		return(x)
+	}
+}
+
+.toSf <- function(x) {
+    if (inherits(x, "Spatial")) {
+        return(st_as_sf(x))
+    } else {
+        return(x)
+    }
+}
+
+.toTerra <- function(x) {
+    if (inherits(x, "Raster")) {
+        return(rast(x))
+    } else {
+        return(x)
+    }
+}
 
 #' Extract numbers from strings
 #' 
@@ -102,6 +151,13 @@
     }
 }
 
+.getNCores <- function(){
+    if(isTRUE(getOption('rasterCluster'))) {
+        return (length(raster::getCluster()))
+    }
+    return(1)
+}
+
 #' Get file extension for writeRaster
 #' @param x character. Format driver.
 #' @keywords internal
@@ -186,7 +242,7 @@
 #' @keywords internal
 #' @noRd 
 .vMessage <- function(...){    
-    if(getOption("RStoolbox.verbose")){message(...)}
+    if(getOption("RStoolbox.verbose")){message(format(Sys.time(), "%H:%M:%S | "), ...)}
 }
 
 
@@ -227,28 +283,28 @@
     }
 }
 
-#' Subdivide polygons into smaller polygons
-#' @param polygons SpatialPolygonsDataFrame
-#' @param res Numeric. Spatial resolution of subdivition grid
-#' @noRd 
-#' @keywords internal
-.subdividePolys <- function(polygons, res = 1) {
-    pl <- lapply(seq_along(polygons), function(i){
-                ex      <- raster(polygons[i,])
-                res(ex) <- res
-                pgrid   <- rasterToPolygons(ex)
-                pgrid$layer <- 1
-                pp    <- gIntersection(pgrid, polygons[i,], byid=TRUE, drop_lower_td = TRUE)
-                pp    <- as(pp, "SpatialPolygonsDataFrame")
-                data  <- polygons@data[i,]
-                pp@data <- data.frame(data, rn = paste0(rownames(data),"_", seq_along(pp)), row.names = "rn")
-                pp <- spChFIDs(pp, rownames(pp@data))
-                pp
-            })
-    plo <- do.call("rbind", pl)
-    projection(plo) <- projection(polygons)
-    return(plo)
-}
+##' Subdivide polygons into smaller polygons
+##' @param polygons SpatialPolygonsDataFrame
+##' @param res Numeric. Spatial resolution of subdivition grid
+##' @noRd 
+##' @keywords internal
+#.subdividePolys <- function(polygons, res = 1) {
+#    pl <- lapply(seq_along(polygons), function(i){
+#                ex      <- raster(polygons[i,])
+#                res(ex) <- res
+#                pgrid   <- rasterToPolygons(ex)
+#                pgrid$layer <- 1
+#                pp    <- gIntersection(pgrid, polygons[i,], byid=TRUE, drop_lower_td = TRUE)
+#                pp    <- as(pp, "SpatialPolygonsDataFrame")
+#                data  <- polygons@data[i,]
+#                pp@data <- data.frame(data, rn = paste0(rownames(data),"_", seq_along(pp)), row.names = "rn")
+#                pp <- spChFIDs(pp, rownames(pp@data))
+#                pp
+#            })
+#    plo <- do.call("rbind", pl)
+#    projection(plo) <- projection(polygons)
+#    return(plo)
+#}
 
 
 #' RMSE

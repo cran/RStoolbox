@@ -4,12 +4,36 @@
 \alias{ImageMetaData}
 \title{ImageMetaData Class}
 \usage{
-ImageMetaData(file = NA, format = NA, sat = NA, sen = NA,
-  scene = NA, proj = NA, date = NA, pdate = NA, path = NA,
-  row = NA, az = NA, selv = NA, esd = NA, files = NA,
-  bands = NA, quant = NA, cat = NA, na = NA, vsat = NA,
-  scal = NA, dtyp = NA, calrad = NA, calref = NA, calbt = NA,
-  radRes = NA, spatRes = NA)
+ImageMetaData(
+  file = NA,
+  format = NA,
+  sat = NA,
+  sen = NA,
+  scene = NA,
+  colNum = NA,
+  colTier = NA,
+  proj = NA,
+  date = NA,
+  pdate = NA,
+  path = NA,
+  row = NA,
+  az = NA,
+  selv = NA,
+  esd = NA,
+  files = NA,
+  bands = NA,
+  quant = NA,
+  cat = NA,
+  na = NA,
+  vsat = NA,
+  scal = NA,
+  dtyp = NA,
+  calrad = NA,
+  calref = NA,
+  calbt = NA,
+  radRes = NA,
+  spatRes = NA
+)
 }
 \arguments{
 \item{file}{Character. Metadata file}
@@ -21,6 +45,10 @@ ImageMetaData(file = NA, format = NA, sat = NA, sen = NA,
 \item{sen}{Character. Sensor}
 
 \item{scene}{Character. Scene_ID}
+
+\item{colNum}{Character Collection number}
+
+\item{colTier}{Character Collection tier}
 
 \item{proj}{CRS. Projection.}
 
@@ -42,9 +70,9 @@ ImageMetaData(file = NA, format = NA, sat = NA, sen = NA,
 
 \item{bands}{Character vector. Band names}
 
-\item{quant}{Character vector. Quantity, one of c("dn", "tra", "tre", "sre", "bt", "idx")}
+\item{quant}{Character vector. Quantity, one of c("dn", "tra", "tre", "sre", "bt", "idx", "angle")}
 
-\item{cat}{Character vector. Category, e.g. c("image", "pan", "index", "qa")}
+\item{cat}{Character vector. Category, e.g. c("image", "pan", "index", "qa", "aux")}
 
 \item{na}{Numeric vector. No-data value per band}
 

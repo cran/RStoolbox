@@ -6,6 +6,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // classQA
 IntegerVector classQA(NumericVector& x, NumericMatrix rcl);
 RcppExport SEXP _RStoolbox_classQA(SEXP xSEXP, SEXP rclSEXP) {
@@ -86,14 +91,15 @@ BEGIN_RCPP
 END_RCPP
 }
 // predKmeansCpp
-IntegerVector predKmeansCpp(NumericMatrix x, NumericMatrix centers);
-RcppExport SEXP _RStoolbox_predKmeansCpp(SEXP xSEXP, SEXP centersSEXP) {
+NumericMatrix predKmeansCpp(NumericMatrix& x, NumericMatrix& centers, const bool returnDistance);
+RcppExport SEXP _RStoolbox_predKmeansCpp(SEXP xSEXP, SEXP centersSEXP, SEXP returnDistanceSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericMatrix >::type x(xSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type centers(centersSEXP);
-    rcpp_result_gen = Rcpp::wrap(predKmeansCpp(x, centers));
+    Rcpp::traits::input_parameter< NumericMatrix& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix& >::type centers(centersSEXP);
+    Rcpp::traits::input_parameter< const bool >::type returnDistance(returnDistanceSEXP);
+    rcpp_result_gen = Rcpp::wrap(predKmeansCpp(x, centers, returnDistance));
     return rcpp_result_gen;
 END_RCPP
 }

@@ -4,8 +4,7 @@
 \alias{stackMeta}
 \title{Import separate Landsat files into single stack}
 \usage{
-stackMeta(file, quantity = "all", category = "image",
-  allResolutions = FALSE)
+stackMeta(file, quantity = "all", category = "image", allResolutions = FALSE)
 }
 \arguments{
 \item{file}{Character. Path to Landsat MTL metadata (*_MTL.txt) file or an Landsat CDR xml metadata file (*.xml).}
@@ -29,7 +28,6 @@ Be aware that by default stackMeta() does NOT import panchromatic bands nor ther
 Note that nowadays the USGS uses cubic convolution to resample the TIR bands to 30m resolution.
 }
 \examples{
-library(rgdal)
 ## Example metadata file (MTL)
 mtlFile  <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", package="RStoolbox")
 

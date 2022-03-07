@@ -4,17 +4,23 @@
 \alias{validateMap}
 \title{Map accuracy assessment}
 \usage{
-validateMap(map, valData, responseCol, nSamples = 500,
-  mode = "classification", classMapping = NULL)
+validateMap(
+  map,
+  valData,
+  responseCol,
+  nSamplesV = 500,
+  mode = "classification",
+  classMapping = NULL
+)
 }
 \arguments{
 \item{map}{RasterLayer. The classified map.}
 
-\item{valData}{SpatialPolygonsDataFrame or SpatialPointsDataFrame with validation data.}
+\item{valData}{sf or sp object with validation data (POLYGONs or POINTs).}
 
 \item{responseCol}{Character. Column containing the validation data in attribute table of \code{valData}.}
 
-\item{nSamples}{Integer. Number of pixels to sample for validation (only applies to polygons).}
+\item{nSamplesV}{Integer. Number of pixels to sample for validation (only applies to polygons).}
 
 \item{mode}{Character. Either 'classification' or 'regression'.}
 
@@ -22,9 +28,6 @@ validateMap(map, valData, responseCol, nSamples = 500,
 }
 \description{
 validate a map from a classification or regression model. This can be useful to update the accuracy assessment after filtering, e.g. for a minimum mapping unit.
-}
-\note{
-Polygons, which are smaller than the map resolution will only be considered if they overlap with a pixel center coordinate, otherwise they will be ignored.
 }
 \examples{
 \dontrun{
