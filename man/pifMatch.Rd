@@ -15,9 +15,9 @@ pifMatch(
 )
 }
 \arguments{
-\item{img}{RasterStack or RasterBrick. Image to be adjusted.}
+\item{img}{RasterStack or RasterBrick or SpatRaster. Image to be adjusted.}
 
-\item{ref}{RasterStack or RasterBrick. Reference image.}
+\item{ref}{RasterStack or RasterBrick or SpatRaster. Reference image.}
 
 \item{method}{Method to calculate pixel similarity. Options: euclidean distance ('ed'), spectral angle ('sam') or pearson correlation coefficient ('cor').}
 
@@ -31,7 +31,7 @@ pifMatch(
 }
 \value{
 Returns a List with the adjusted image and intermediate products (if requested). 
-#' \itemize{
+\itemize{
    \item \code{img}: the adjusted image
    \item \code{simMap}: pixel-wise similarity map (if \code{returnSimMap = TRUE})
    \item \code{pifMap}: binary map of pixels selected as pseudo-invariant features (if \code{returnPifMap = TRUE}) 
@@ -54,17 +54,15 @@ The threshold is defined as a similarity quantile. Setting \code{quantile=0.95} 
 Model fitting is performed with simple linear models (\code{\link[stats]{lm}}); fitting one model per layer.
 }
 \examples{
-library(raster)
+library(terra)
 
-## Import Landsat example data
-data(lsat)
 
 ## Create fake example data
 ## In practice this would be an image from another acquisition date
-lsat_b <- log(lsat)  
+lsat_b <- log(lsat)
 
 ## Run pifMatch and return similarity layer, invariant features mask and models
-lsat_b_adj <- pifMatch(lsat_b, lsat, returnPifMap = TRUE, 
+lsat_b_adj <- pifMatch(lsat_b, lsat, returnPifMap = TRUE,
                          returnSimMap = TRUE, returnModels = TRUE)
 \donttest{
 ## Pixelwise similarity

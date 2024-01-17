@@ -9,10 +9,13 @@ rsOpts(verbose)
 \arguments{
 \item{verbose}{Logical. If \code{TRUE} many functions will print status messages about the current processing step. By default verbose mode is disabled.}
 }
+\value{
+No return, just a setter for the verbosiness of the RStoolbox package
+}
 \description{
 shortcut to options(RStoolbox.*)
 }
 \examples{
-# rsOpts(verbose=TRUE)
+rsOpts(verbose=TRUE)
 
 }

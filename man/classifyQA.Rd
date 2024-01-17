@@ -14,7 +14,7 @@ classifyQA(
 )
 }
 \arguments{
-\item{img}{RasterLayer. Landsat 8 OLI QA band.}
+\item{img}{RasterLayer or SpatRaster. Landsat 8 OLI QA band.}
 
 \item{type}{Character. Classes which should be returned. One or more of c("background", "cloud", "cirrus","snow", "water").}
 
@@ -24,10 +24,10 @@ classifyQA(
 
 \item{legacy}{Encoding systematic Options: \code{c("collection1", "pre_collection")}. Default is "collection1" for the Landsat Collection 1 8-bit quality designations. Use "pre_collection" for imagery downloaded before the Collection 1 quality designations were introduced}
 
-\item{...}{further arguments passed to \link[raster]{writeRaster}}
+\item{...}{further arguments passed to \link[terra]{writeRaster}}
 }
 \value{
-Returns a RasterLayer with maximal five classes:
+Returns a SpatRaster with maximal five classes:
 \tabular{rr}{
 class \tab value \cr
 background \tab 1L \cr 
@@ -53,8 +53,8 @@ By default each class is queried for *high* confidence. See \link{encodeQA} for 
 This approach corresponds to the way LandsatLook Quality Images are produced by the USGS.
 }
 \examples{
-library(raster)
-qa <- raster(ncol = 100, nrow=100, val = sample(1:2^14,  10000))
+library(terra)
+qa <- rast(ncol = 100, nrow=100, val = sample(1:2^14,  10000))
 
 ## QA classes
 qacs <- classifyQA(img = qa)

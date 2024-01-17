@@ -14,9 +14,9 @@ validateMap(
 )
 }
 \arguments{
-\item{map}{RasterLayer. The classified map.}
+\item{map}{RasterLayer or SpatRaster. The classified map.}
 
-\item{valData}{sf or sp object with validation data (POLYGONs or POINTs).}
+\item{valData}{sf object with validation data (POLYGONs or POINTs).}
 
 \item{responseCol}{Character. Column containing the validation data in attribute table of \code{valData}.}
 
@@ -26,16 +26,17 @@ validateMap(
 
 \item{classMapping}{optional data.frame with columns \code{'class'} and \code{'classID'} defining the mapping from raster integers to class names.}
 }
+\value{
+Returns a structured list includng the preformance and confusion-matrix of your then validated input data
+}
 \description{
 validate a map from a classification or regression model. This can be useful to update the accuracy assessment after filtering, e.g. for a minimum mapping unit.
 }
 \examples{
-\dontrun{
 library(caret)
-library(raster)
+library(terra)
 
 ## Training data
-data(lsat)
 poly     <- readRDS(system.file("external/trainingPolygons.rds", package="RStoolbox"))
 
 ## Split training data in training and validation set (50\%-50\%)
@@ -52,10 +53,9 @@ polishedMap <- focal(sc$map, matrix(1,3,3), fun = modal)
 
 ## Validation
 ## Before filtering
-val0 <- validateMap(sc$map, valData = val, responseCol = "class", 
+val0 <- validateMap(sc$map, valData = val, responseCol = "class",
                             classMapping = sc$classMapping)
 ## After filtering
 val1 <- validateMap(polishedMap, valData = val, responseCol = "class",
                              classMapping = sc$classMapping)
-}
 }

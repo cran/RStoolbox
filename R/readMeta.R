@@ -90,7 +90,7 @@ readMeta <- function(file, raw = FALSE){
         
         pars    <- meta[[projGroup]][c("MAP_PROJECTION","UTM_ZONE","DATUM", "ELLIPSOID"),]
         pars[1] <- tolower(pars[1])
-        proj    <- CRS(paste0(c("+proj=", "+zone=", "+units=m +datum=", "+ellips="), pars, collapse=" "))
+        proj    <- st_crs(paste0(c("+proj=", "+zone=", "+units=m +datum=", "+ellips="), pars, collapse=" "))
         
         rn <- row.names(meta[[contGroup]])
         
@@ -206,7 +206,7 @@ readMeta <- function(file, raw = FALSE){
         row     <- as.numeric(meta$global_metadata$wrs["row"])
         az      <- as.numeric(meta$global_metadata$solar_angles["azimuth"])
         selv    <- 90 - as.numeric(meta$global_metadata$solar_angles["zenith"])        
-        proj    <- CRS(paste0("+proj=utm +zone=",meta$global_metadata$projection_information$utm_proj_params," +datum=WGS84 +units=m"))
+        proj    <- st_crs(paste0("+proj=utm +zone=",meta$global_metadata$projection_information$utm_proj_params," +datum=WGS84 +units=m"))
         esd     <- .ESdist(date)
         files   <- sapply(meta$bands, "[[", "file_name")   
         quant   <- luv[sapply(atts, "[", "product")]
@@ -268,13 +268,15 @@ readMeta <- function(file, raw = FALSE){
 #' @param na Numeric vector. No-data value per band
 #' @param vsat Numeric vector. Saturation value per band
 #' @param scal Numeric vector. Scale factor per band. e.g. if data was scaled to 1000*reflectance for integer conversion.
-#' @param dtyp Character vector. Data type per band. See \code{\link[raster]{dataType}} for options.
+#' @param dtyp Character vector. Data type per band.
 #' @param radRes Numeric vector. Radiometric resolution per band.
 #' @param spatRes Numeric vector. Spatial resolution per band.
 #' @param calrad data.frame. Calibration coefficients for dn->radiance conversion. Must have columns 'gain' and 'offset'. Rows named according to \code{bands}.
 #' @param calref data.frame. Calibration coefficients for dn->reflectance conversion. Must have columns 'gain' and 'offset'. Rows named according to \code{bands}.
 #' @param calbt data.frame. Calibration coefficients for dn->brightness temperature conversion. Must have columns 'K1' and 'K2'. Rows named according to \code{bands}.
 #' @export
+#' @return
+#' Returns a structured, fully customizable meta-data table of a file
 ImageMetaData <- function(file = NA, format = NA, sat = NA, sen = NA, scene = NA, colNum = NA, colTier = NA, 
         proj =NA, date = NA, pdate = NA,path = NA, row = NA, az = NA, selv = NA,
         esd = NA, files = NA, bands = NA, quant = NA, cat = NA, na = NA, vsat = NA, 
@@ -327,7 +329,7 @@ ImageMetaData <- function(file = NA, format = NA, sat = NA, sen = NA, scene = NA
 summary.ImageMetaData <- function(object, ...) { 
     
     labs <- format(c("Scene:", "Satellite:", "Sensor:", "Date:", "Path/Row:", "Projection:")) 
-    vals <- c(object$SCENE_ID, object$SATELLITE,object$SENSOR,format(object$ACQUISITION_DATE, "%F"), paste(object$PATH_ROW, collapse="/"), projection(object$PROJECTION))
+    vals <- c(object$SCENE_ID, object$SATELLITE,object$SENSOR,format(object$ACQUISITION_DATE, "%F"), paste(object$PATH_ROW, collapse="/"), st_crs(object$PROJECTION))
     cat(paste(labs, vals), fill =1)
     
     cat("\nData:\n") 
