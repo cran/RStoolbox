@@ -4,7 +4,7 @@
 #' 
 #' Functionality is based on \code{\link[terra]{plotRGB}} from the raster package.
 #' 
-#' @param img RasterStack or RasterBrick
+#' @param img SpatRaster
 #' @param r Integer or character. Red layer in x. Can be set to \code{NULL}, in which case the red channel will be set to zero.
 #' @param g Integer or character. Green layer in x. Can be set to \code{NULL}, in which case the green channel will be set to zero.
 #' @param b Integer or character. Blue layer in x. Can be set to \code{NULL}, in which case the blue channel will be set to zero.
@@ -65,6 +65,8 @@ ggRGB <- function(img, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch =
         alpha = 1, coord_equal = TRUE, geom_raster = FALSE, nullValue = 0) { 
     
     ## TODO: handle single value rasters (e.g. masks)
+
+    img <- .toTerra(img)
     
     # RGB processing originally forked from raster::plotRGB (Author: Robert J. Hijmans) GPL3 
     verbose <- getOption("RStoolbox.verbose")
@@ -73,7 +75,7 @@ ggRGB <- function(img, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch =
     rgb <- unlist(.numBand(raster=img,r,g,b))
     nComps <- length(rgb)
 
-    rr <- spatSample(img[[rgb]], maxpixels, ext = .toTerra(ext), method = "regular", as.raster = TRUE)
+    rr <- spatSample(img[[rgb]], maxpixels, ext = ext(img), method = "regular", as.raster = TRUE)
     ex <- as.vector(ext(rr))
     
     RGB    <- as.data.frame(rr, xy = TRUE)

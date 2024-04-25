@@ -6,10 +6,10 @@
 #'  
 #' \itemize{
 #'  \item \code{\link{readMeta}}:  import Landsat metadata from MTL or XML files
-#'  \item \code{\link{stackMeta}}: load Landsat bands based on metadata
+#'  \item \code{\link{stackMeta}}, \code{\link{getMeta}}: load Landsat bands based on metadata
 #'  \item \code{\link{readSLI} & \link{writeSLI}}: read and write ENVI spectral libraries
 #'  \item \code{\link{saveRSTBX} & \link{readRSTBX}}: save and re-import RStoolbox classification objects (model and map)
-#' \item \code{\link{readEE}}: import and tidy EarthExplorer search results
+#'  \item \code{\link{readEE}}: import and tidy EarthExplorer search results
 #' }
 #' 
 #' @section Data Pre-Processing:
@@ -19,11 +19,15 @@
 #'  \item \code{\link{topCor}}: topographic illumination correction
 #'  \item \code{\link{cloudMask} & \link{cloudShadowMask}}: mask clouds and cloud shadows in Landsat or other imagery which comes with a thermal band
 #'  \item \code{\link{classifyQA}}: extract layers from Landsat 8 QA bands, e.g. cloud confidence
+#'  \item \code{\link{encodeQA} & \link{decodeQA}}: encode/decode Landsat 16-bit QA bands.
 #'  \item \code{\link{rescaleImage}}: rescale image to match min/max from another image or a specified min/max range
-#'     \item \code{\link{normImage}}: normalize imagery by centering and scaling
+#'  \item \code{\link{normImage}}: normalize imagery by centering and scaling
+#'  \item \code{\link{oneHotEncode}}: one-hot encode a raster or vector
 #'  \item \code{\link{histMatch}}: matches the histograms of two scenes
+#'  \item \code{\link{pifMatch}}: matches one scene to another based on linear regression of Pseudo-Invariant Features (PIF)
 #'  \item \code{\link{coregisterImages}}: co-register images based on mutual information
 #'  \item \code{\link{panSharpen}}: sharpen a coarse resolution image with a high resolution image (typically panchromatic)
+#'  \item \code{\link{estimateHaze}}: estimate image haze for Dark Object Subtraction (DOS)
 #' }
 #' 
 #'@section Data Analysis:
@@ -34,9 +38,11 @@
 #' \item \code{\link{sam}}: spectral angle mapper
 #' \item \code{\link{rasterPCA}}: principal components transform for raster data
 #' \item \code{\link{rasterCVA}}: change vector analysis
+#' \item \code{\link{rasterEntropy}}: calculates shannon entropy
 #' \item \code{\link{unsuperClass}}: unsupervised classification
-#' \item \code{\link{superClass}}: supervised classification
+#' \item \code{\link{superClass}},  \code{\link{validateMap}}, \code{\link{getValidation}}: supervised classification and validation
 #' \item \code{\link{fCover}}: fractional cover of coarse resolution imagery based on high resolution classification
+#' \item \code{\link{mesma}}: spectral unmixing using Multiple Endmember Spectral Mixture Analysis (MESMA)
 #' }
 #' 
 #' @section Data Display:
@@ -45,6 +51,10 @@
 #' \item \code{\link{ggR}}: single raster layer plotting with ggplot2
 #' \item \code{\link{ggRGB}}: efficient plotting of remote sensing imagery in RGB with ggplot2
 #' }
+#'
+#' @keywords earth-observation remote-sensing spatial-data-analysis
+#'
+#' "RStoolbox"
 #'
 #' @import sf terra
 #' @importFrom exactextractr exact_extract
@@ -62,7 +72,6 @@
 #' @importFrom grDevices hsv
 #' @useDynLib RStoolbox
 #' @importFrom Rcpp sourceCpp
-#' @docType package
 #' @name RStoolbox
 NULL
 
@@ -100,5 +109,29 @@ NULL
 #' @keywords datasets
 #' @name lsat
 #' @examples
-#' ggRGB(lsat, stretch = "lin")
+#' ggRGB(lsat, stretch = "sqrt")
+NULL
+
+#' Sentinel 2 MSI L2A Scene
+#'
+#' Contains all 13 bands in already converted spectral reflectances
+#'
+#' @usage sen2
+#' @docType data
+#' @keywords datasets
+#' @name sen2
+#' @examples
+#' ggRGB(sen2, r=4, g=3, b=2, stretch = "lin")
+NULL
+
+#' SRTM scene for the sen2 exemplary scene
+#'
+#' DEM for the Sentinel 2 example area taken from SRTM v4
+#'
+#' @usage srtm_sen2
+#' @docType data
+#' @keywords datasets
+#' @name srtm_sen2
+#' @examples
+#' ggR(srtm_sen2)
 NULL
