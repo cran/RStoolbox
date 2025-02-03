@@ -23,6 +23,7 @@ struct Token {
 class Tokenizer {
     string expr;
     size_t pos;
+
 public:
     Tokenizer(const string &expression) : expr(expression), pos(0) {}
 
@@ -54,14 +55,19 @@ public:
 class Evaluator {
     Tokenizer tokenizer;
     Token currentToken;
+    size_t vectorSize;
 
     void nextToken() { currentToken = tokenizer.nextToken(); }
+
+    vector<double> expandScalar(double scalar) {
+        return vector<double>(vectorSize, scalar);
+    }
 
     vector<double> getValue() {
         if (currentToken.type == NUMBER) {
             double val = stod(currentToken.value);
             nextToken();
-            return vector<double>(variables.begin()->second.size(), val);
+            return expandScalar(val);
         }
         if (currentToken.type == VARIABLE) {
             if (variables.find(currentToken.value) == variables.end())
@@ -91,7 +97,13 @@ class Evaluator {
             string op = currentToken.value;
             nextToken();
             vector<double> right = factor();
-            for (size_t i = 0; i < result.size(); i++) {
+
+            if (result.empty() || right.empty()) throw runtime_error("Vector size mismatch.");
+
+            if (result.size() == 1) result = expandScalar(result[0]);
+            if (right.size() == 1) right = expandScalar(right[0]);
+
+            for (size_t i = 0; i < vectorSize; i++) {
                 if (op == "*") result[i] *= right[i];
                 else if (op == "/") {
                     if (right[i] == 0) throw runtime_error("Division by zero");
@@ -108,7 +120,13 @@ class Evaluator {
             string op = currentToken.value;
             nextToken();
             vector<double> right = term();
-            for (size_t i = 0; i < result.size(); i++) {
+
+            if (result.empty() || right.empty()) throw runtime_error("Vector size mismatch.");
+
+            if (result.size() == 1) result = expandScalar(result[0]);
+            if (right.size() == 1) right = expandScalar(right[0]);
+
+            for (size_t i = 0; i < vectorSize; i++) {
                 if (op == "+") result[i] += right[i];
                 else result[i] -= right[i];
             }
@@ -117,7 +135,7 @@ class Evaluator {
     }
 
 public:
-    Evaluator(const string &expr) : tokenizer(expr) { nextToken(); }
+    Evaluator(const string &expr, size_t size) : tokenizer(expr), vectorSize(size) { nextToken(); }
     vector<double> eval() { return expression(); }
 };
 
@@ -388,15 +406,23 @@ NumericMatrix spectralIndicesCpp(NumericMatrix x, CharacterVector indices,
             std::vector<double> vars;
 
             std::vector<std::string> valid_var_names = {
-                "blue", "green", "red", "redEdge1", "redEdge2", "redEdge3", "nir", "swri1", "swir2", "swir3"
+                "blue", "green", "red", "redEdge1", "redEdge2", "redEdge3", "nir", "swir1", "swir2", "swir3"
             };
 
 		    std::vector<double> result(vec_size);
 
             setVariable("blue", blue);
+            setVariable("green", green);
             setVariable("red", red);
+            setVariable("redEdge1", redEdge1);
+            setVariable("redEdge2", redEdge2);
+            setVariable("redEdge3", redEdge3);
+            setVariable("nir", nir);
+            setVariable("swir1", swir1);
+            setVariable("swir2", swir2);
+            setVariable("swir3", swir3);
 
-            Evaluator evaluator(formula.c_str());
+            Evaluator evaluator(formula.c_str(), vec_size);
             vector<double> true_result = evaluator.eval();
 
             Rcpp::NumericVector r_result(true_result.begin(), true_result.end());

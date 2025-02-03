@@ -1,4 +1,4 @@
-9259d09f69c4f412733d73af84547b66 *DESCRIPTION
+a6a951bb459eddcbc11dbdad3066de12 *DESCRIPTION
 799e1aebd5ec6fa0081018bd3159d011 *NAMESPACE
 9c5e7ba0f31073eb83fb217e13b188f7 *NEWS.md
 d9e19307d024490a8e99da6f86e206b1 *R/RStoolbox-package.R
@@ -33,7 +33,7 @@ b6919e0944644b6ca0b6766c22cb8a77 *R/rescaleImage.R
 1198fde9d587fe27f8936eee83d83d71 *R/rsOpts.R
 ae53bd4edd3cf444f5838ecb0a02de52 *R/sam.R
 2ab0ed4d8eec3aee4a02ff5e057c56ea *R/saveRSTBX.R
-6c7882cfed58aec94590068c2ebb9396 *R/spectralIndices.R
+e1800f6b6c67c49c0dadb1469c53fa55 *R/spectralIndices.R
 500bbbdba0f477bbcdd46801af885aec *R/stackMeta.R
 9a3e0c608bd2c47816c6712b8d28f79f *R/superClass.R
 39d6d20225e6dfab4dfce48581a6acb4 *R/sysdata.rda
@@ -102,7 +102,7 @@ a1e69a5671f81719127c1561fce13b86 *man/rsOpts.Rd
 18e72f2e7094b8aa274f835ab6060408 *man/sam.Rd
 ae408510178ee7784594f156f073696c *man/saveRSTBX.Rd
 5003d4be6c7d4e4355667b3e4a394d40 *man/sen2.Rd
-9b6371dcd38dd9796505d548c46c4a30 *man/spectralIndices.Rd
+5ba8fce724b1d8fbc23a16082f080e80 *man/spectralIndices.Rd
 1cd6554334a524e96cca9e637458e39f *man/srtm.Rd
 dbcfb203d7ff027e2732a109fa91e614 *man/srtm_sen2.Rd
 5e8692d18fd9eb875c950eaf69d799a0 *man/stackMeta.Rd
@@ -129,7 +129,7 @@ eabbe049fad1ba60598f15ae686b5131 *src/normImage.cpp
 fbcac0d87e4d67379d108bf1c31e9d02 *src/pwSimilarity.cpp
 8288fdc27a2f3ff6fd8507515a53357d *src/rescaleImage.cpp
 f588ce2ebcd308066d62706032798bdc *src/sam.cpp
-19e05e996682bd7da4db417387740a98 *src/spectralIndices.cpp
+164aab5f7b60ec443e2b694f724bda4b *src/spectralIndices.cpp
 89ed2f1571c3d9da9a80e716c00e262c *tests/testthat.R
 1f391bbbb3c40e668ee2c2ff9f024437 *tests/testthat/helper-testUtils.R
 824c6d17792ddf270819e3604a10744b *tests/testthat/test-classifyQA.R
@@ -162,7 +162,7 @@ aa8063079c684bd17a8d736bb28844c2 *tests/testthat/test-readMeta.R
 73ecdf05e4e45398a84867b29c3fa898 *tests/testthat/test-sam.R
 1a03e896622edbc5f8fe7479a57b9ab7 *tests/testthat/test-saveReadRSTBX.R
 28e4267c137ec5bf7f489fdf838468be *tests/testthat/test-sli.R
-ad2acb69bc5a20d8bd2df13c9916c6ca *tests/testthat/test-spectralIndices.R
+7530105235a27056cc2faa121283dcbc *tests/testthat/test-spectralIndices.R
 c606d0a5acecc4c11c7092e935eb0d3a *tests/testthat/test-stackMeta.R
 c4008ca4ce40bb9a79bf751af20e29ff *tests/testthat/test-superClass.R
 e0fc1ad60b1e4832c1979a4c92e9cab7 *tests/testthat/test-tasseledCap.R
