@@ -1,11 +1,11 @@
-a6a951bb459eddcbc11dbdad3066de12 *DESCRIPTION
+83a8fe21b4c766805d059e964795d59d *DESCRIPTION
 799e1aebd5ec6fa0081018bd3159d011 *NAMESPACE
 9c5e7ba0f31073eb83fb217e13b188f7 *NEWS.md
 d9e19307d024490a8e99da6f86e206b1 *R/RStoolbox-package.R
 f20fea8c059bb9a203f7d978f64f9346 *R/RcppExports.R
 4a7f53884973d0ad81bab5fa26efb559 *R/classifyQA.R
 9a24eab98c07c2f8ee0233ee0448d8d7 *R/cloudMask.R
-d81d075283f31c69f44c0cd48b97893b *R/coregisterImages.R
+42e2db82ed10246068138a6d4816e442 *R/coregisterImages.R
 4b844fa0a55ab720db535fce6c49d74e *R/encodeQA.R
 b5ca17a95746b59aaef472cc39a3e02a *R/estimateHaze.R
 a76fcaae1e488406ca46b595890b095e *R/fCover.R
@@ -13,8 +13,8 @@ a76fcaae1e488406ca46b595890b095e *R/fCover.R
 1f7561a617a61c996b03b3cf0445e408 *R/getMeta.R
 f9d0b2befa43b14c619e7852e4d62097 *R/getValidation.R
 4513dd862bc04d8edb3212cd22431085 *R/ggR.R
-19fc60647c1b8e289f3b7548b189401a *R/ggRGB.R
-0e0fd156191d55ac8620d06274139d76 *R/histMatch.R
+66d6f3a6ce27e42da1c1d31f2c57bc89 *R/ggRGB.R
+fec7cf0acdcf8bf9381e11e6f39b96bb *R/histMatch.R
 1d96a40630601625a2d5dc1bb0d2ade1 *R/internalFunctions.R
 2dbae34f84ca8415f1a0815dcecc1008 *R/mesma.R
 22526fcb9ed14010bac1081e1eb18e36 *R/mlc.R
@@ -35,7 +35,7 @@ ae53bd4edd3cf444f5838ecb0a02de52 *R/sam.R
 2ab0ed4d8eec3aee4a02ff5e057c56ea *R/saveRSTBX.R
 e1800f6b6c67c49c0dadb1469c53fa55 *R/spectralIndices.R
 500bbbdba0f477bbcdd46801af885aec *R/stackMeta.R
-9a3e0c608bd2c47816c6712b8d28f79f *R/superClass.R
+457518c35d55e615477bf440f9f43928 *R/superClass.R
 39d6d20225e6dfab4dfce48581a6acb4 *R/sysdata.rda
 eb6fb16d9b5cfab573e483223c4cb678 *R/tasseledCap.R
 4e0a6c74b2b2f1e11c8d68fcd7b3c464 *R/topCor.R
@@ -43,7 +43,7 @@ eb6fb16d9b5cfab573e483223c4cb678 *R/tasseledCap.R
 b56ff2b193ecba52f9ec7f3b10cca008 *R/utils-pipe.R
 b955af00724ac25db350a797cc879799 *R/validateMap.R
 0bd1c4c84013340213df63aa98eb1d13 *R/zzz.R
-a2f3e09c6a2de0dcc7a0d284e832a8e7 *README.md
+5e4ec6ded08cd01e9fdc10c3e171d7a2 *README.md
 e931a68c6c3368449807f2f4bc0ded6c *inst/CITATION
 5c3883b97557327dd859d0bc6113e991 *inst/external/EarthExplorer_LS8.txt
 65db3c14525fe681958c63ba3b2cef06 *inst/external/landsat/LT52240631988227CUB02_B1.TIF
@@ -102,11 +102,11 @@ a1e69a5671f81719127c1561fce13b86 *man/rsOpts.Rd
 18e72f2e7094b8aa274f835ab6060408 *man/sam.Rd
 ae408510178ee7784594f156f073696c *man/saveRSTBX.Rd
 5003d4be6c7d4e4355667b3e4a394d40 *man/sen2.Rd
-5ba8fce724b1d8fbc23a16082f080e80 *man/spectralIndices.Rd
+00bc9376c8d223e4c68f3e87f89076b0 *man/spectralIndices.Rd
 1cd6554334a524e96cca9e637458e39f *man/srtm.Rd
 dbcfb203d7ff027e2732a109fa91e614 *man/srtm_sen2.Rd
 5e8692d18fd9eb875c950eaf69d799a0 *man/stackMeta.Rd
-8b55f81147c8611412679c2c5f44080d *man/superClass.Rd
+df27a65bfb17ba18044f0a3a0dbdaffa *man/superClass.Rd
 d70af33797fe0c47eb972e33dc2ef034 *man/tasseledCap.Rd
 7576b52f2cbc8398f8970f8849bfc733 *man/topCor.Rd
 485417784543bbef089364320735a4a4 *man/unsuperClass.Rd
@@ -125,7 +125,7 @@ ca2f03d1291bcafbf1f0d9cb98c4e048 *src/memory.cpp
 eabbe049fad1ba60598f15ae686b5131 *src/normImage.cpp
 029b62682e1300a43484094bbab5199f *src/oneHot.cpp
 6439d69c1e1f0fbf19c6c077df5e4eff *src/predictKmeans.cpp
-75349944978623383ac67a252d0f9669 *src/predictMlc.cpp
+43b824c19cb3304f36c7009bf362b859 *src/predictMlc.cpp
 fbcac0d87e4d67379d108bf1c31e9d02 *src/pwSimilarity.cpp
 8288fdc27a2f3ff6fd8507515a53357d *src/rescaleImage.cpp
 f588ce2ebcd308066d62706032798bdc *src/sam.cpp
@@ -142,7 +142,7 @@ f588ce2ebcd308066d62706032798bdc *src/sam.cpp
 49f4e1215d616a112caedaf8cf5fe527 *tests/testthat/test-gainOffsetRescale.R
 22b1a1c919524609118aeb9641dbd4d1 *tests/testthat/test-getMeta.R
 27a44a71c4c424cb76653209985fe29e *tests/testthat/test-getValidation.R
-efb07b37fd9e13fd4470fd38bd6a6eb8 *tests/testthat/test-ggplot.R
+f817f2dcfad62587647af481abdb855a *tests/testthat/test-ggplot.R
 13c5cd44df39783419999a57a2be49e6 *tests/testthat/test-histMatch.R
 08bb2af03257c257b33758a56941e94d *tests/testthat/test-internalFunctions.R
 31e18d8793985b258be4d6d3a1f63297 *tests/testthat/test-mesma.R
@@ -162,9 +162,9 @@ aa8063079c684bd17a8d736bb28844c2 *tests/testthat/test-readMeta.R
 73ecdf05e4e45398a84867b29c3fa898 *tests/testthat/test-sam.R
 1a03e896622edbc5f8fe7479a57b9ab7 *tests/testthat/test-saveReadRSTBX.R
 28e4267c137ec5bf7f489fdf838468be *tests/testthat/test-sli.R
-7530105235a27056cc2faa121283dcbc *tests/testthat/test-spectralIndices.R
+0066f09a27381806dcbf7d0e78b4dca1 *tests/testthat/test-spectralIndices.R
 c606d0a5acecc4c11c7092e935eb0d3a *tests/testthat/test-stackMeta.R
-c4008ca4ce40bb9a79bf751af20e29ff *tests/testthat/test-superClass.R
+74ca9ca3ca48aa62b1cf5b0956f6207c *tests/testthat/test-superClass.R
 e0fc1ad60b1e4832c1979a4c92e9cab7 *tests/testthat/test-tasseledCap.R
 044bb1001cf632296b40e9a2c244abf5 *tests/testthat/test-topCor.R
 9fd90b7ca843dbb98bdf3d8acb3464e2 *tests/testthat/test-unsuperClass.R
